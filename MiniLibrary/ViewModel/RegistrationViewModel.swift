@@ -124,6 +124,10 @@ class RegistrationViewModel : RegistrationViewModelType, RegistrationViewModelIn
                         print("Firebase Auth 新規登録失敗" + error.localizedDescription)
                         self.isSuccessRegistration.accept(false)
                     }
+                    else {
+                        print("ユーザーが見つかりませんでした")
+                        self.isSuccessRegistration.accept(false)
+                    }
                     
                 })
             }

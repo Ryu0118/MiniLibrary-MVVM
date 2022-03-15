@@ -11,6 +11,8 @@
 		237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */; };
 		237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1A27E0C0AB00C1731C /* Registration.swift */; };
 		237E7C1D27E0CB5F00C1731C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */; };
+		237E7C1F27E0D44000C1731C /* LoginInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1E27E0D44000C1731C /* LoginInfo.swift */; };
+		237E7C2127E0D8ED00C1731C /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2027E0D8ED00C1731C /* UIAlertController.swift */; };
 		23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317127E041BC001C7BC2 /* AppDelegate.swift */; };
 		23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317327E041BC001C7BC2 /* SceneDelegate.swift */; };
 		23D7317627E041BC001C7BC2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317527E041BC001C7BC2 /* ViewController.swift */; };
@@ -55,6 +57,8 @@
 		237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		237E7C1A27E0C0AB00C1731C /* Registration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registration.swift; sourceTree = "<group>"; };
 		237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		237E7C1E27E0D44000C1731C /* LoginInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInfo.swift; sourceTree = "<group>"; };
+		237E7C2027E0D8ED00C1731C /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
 		23D7316E27E041BC001C7BC2 /* MiniLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D7317127E041BC001C7BC2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23D7317327E041BC001C7BC2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -195,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				237E7C1A27E0C0AB00C1731C /* Registration.swift */,
+				237E7C1E27E0D44000C1731C /* LoginInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -206,6 +211,7 @@
 				23D731AB27E0548A001C7BC2 /* UIColor+.swift */,
 				23D731B927E06B42001C7BC2 /* Reactive+.swift */,
 				23D731BB27E06C65001C7BC2 /* UIStackView+.swift */,
+				237E7C2027E0D8ED00C1731C /* UIAlertController.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -511,7 +517,9 @@
 				23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */,
 				237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */,
 				23D731B327E05730001C7BC2 /* AuthTextField.swift in Sources */,
+				237E7C2127E0D8ED00C1731C /* UIAlertController.swift in Sources */,
 				23D731BA27E06B42001C7BC2 /* Reactive+.swift in Sources */,
+				237E7C1F27E0D44000C1731C /* LoginInfo.swift in Sources */,
 				237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */,
 				23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */,
 				23D731BC27E06C65001C7BC2 /* UIStackView+.swift in Sources */,

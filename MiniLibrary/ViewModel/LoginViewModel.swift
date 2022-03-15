@@ -7,16 +7,19 @@
 
 import RxSwift
 import RxCocoa
+import FirebaseAuth
 
 protocol LoginViewModelInputs: AnyObject {
     var emailObserver: AnyObserver<String> { get }
     var passwordObserver: AnyObserver<String> { get }
+    var loginObserver: AnyObserver<LoginInfo> { get }
 }
 
 protocol LoginViewModelOutputs: AnyObject {
     var isValidEmail: Driver<Bool> { get }
     var isValidPassword: Driver<Bool> { get }
     var isEnabledButton: Driver<Bool> { get }
+    var isSuccessLogin: PublishRelay<Bool> { get }
 }
 
 protocol LoginViewModelType: AnyObject {
@@ -37,12 +40,18 @@ class LoginViewModel : LoginViewModelType, LoginViewModelInputs, LoginViewModelO
     var passwordObserver: AnyObserver<String> {
         return passwordSubject.asObserver()
     }
+    private var loginSubject = PublishSubject<LoginInfo>()
+    var loginObserver: AnyObserver<LoginInfo> {
+        return loginSubject.asObserver()
+    }
     
     //outputs
     var isValidEmail: Driver<Bool>
     var isValidPassword: Driver<Bool>
     var isEnabledButton: Driver<Bool>
+    var isSuccessLogin = PublishRelay<Bool>()
     
+    private let disposeBag = DisposeBag()
     
     init() {
         
@@ -60,6 +69,28 @@ class LoginViewModel : LoginViewModelType, LoginViewModelInputs, LoginViewModelO
             return $0 && $1
         }
         .asDriver(onErrorJustReturn: false)
+        
+        loginSubject
+            .asObservable()
+            .subscribe {[weak self] info in
+                guard let self = self,
+                      let info = info.element else { return }
+                
+                Auth.auth().signIn(withEmail: info.email, password: info.password, completion: { result, error in
+                    if let _ = result?.user {
+                        self.isSuccessLogin.accept(true)
+                    }
+                    else if let error = error {
+                        print("Failed Login: ", error.localizedDescription)
+                        self.isSuccessLogin.accept(false)
+                    }else{
+                        print("User Not found")
+                        self.isSuccessLogin.accept(false)
+                    }
+                })
+                
+            }
+            .disposed(by: disposeBag)
         
     }
 }

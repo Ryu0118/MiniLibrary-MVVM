@@ -105,7 +105,10 @@ extension RegistrationViewController {
             .drive {[unowned self] isSuccess in
                 
                 if isSuccess {
-                    UIAlertController.show(target: self, title: "成功", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                    let vc = ViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    vc.modalTransitionStyle = .crossDissolve
+                    present(vc, animated: true, completion: nil)
                 }else{
                     UIAlertController.show(target: self, title: "失敗", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
                 }

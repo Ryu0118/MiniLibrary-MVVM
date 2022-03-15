@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import Firebase
 import RxKeyboard
+import KRProgressHUD
 
 class LoginViewController : UIViewController {
     
@@ -70,14 +71,19 @@ extension LoginViewController {
                 passwordTextField.rx.controlEvent(.editingDidEndOnExit).asObservable()
             )
             .observe(on: MainScheduler.instance)
-            .withLatestFrom(viewModel.isEnabledButton.asObservable())
-            .subscribe { isEnabled in
-                if let isEnabled = isEnabled.element, isEnabled {
-                    UIAlertController.show(target: self, title: "成功", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
-                }else{
+            .withLatestFrom(viewModel.outputs.isEnabledButton.asObservable())
+            .do {[unowned self] isEnabled in
+                if !isEnabled {
                     UIAlertController.show(target: self, title: "正しいメールアドレスを入力してください", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                }else{
+                    KRProgressHUD.show()
                 }
             }
+            .filter { $0 }
+            .flatMapLatest {[unowned self] isEnabled -> Observable<LoginInfo> in
+                return Observable<LoginInfo>.just(LoginInfo(email: emailTextField.text, password: passwordTextField.text))
+            }
+            .bind(to: viewModel.inputs.loginObserver)
             .disposed(by: disposeBag)
         
         RxKeyboard.instance.visibleHeight
@@ -89,6 +95,22 @@ extension LoginViewController {
             }
             .disposed(by: disposeBag)
 
+        viewModel.outputs.isSuccessLogin
+            .asDriver(onErrorJustReturn: false)
+            .do { _ in
+                KRProgressHUD.dismiss()
+            }
+            .drive {[unowned self] isSuccess in
+                if isSuccess {
+                    let vc = ViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    vc.modalTransitionStyle = .crossDissolve
+                    present(vc, animated: true, completion: nil)
+                }else{
+                    UIAlertController.show(target: self, title: "失敗", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     private func addGestureRecognizer() {
@@ -158,19 +180,4 @@ extension LoginViewController {
 
 extension LoginViewController {
     
-}
-
-extension UIAlertController {
-    static func show(target: UIViewController, title: String? = nil, message: String? = nil, prefferedStyle: Style, actionTitles: [String], actionStyles: [UIAlertAction.Style], actionHandlers: [((UIAlertAction) -> ())?]) {
-        guard actionTitles.count == actionStyles.count && actionHandlers.count == actionStyles.count else {
-            fatalError()
-        }
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: prefferedStyle)
-        actionTitles.enumerated().forEach { i, title in
-            let action = UIAlertAction(title: title, style: actionStyles[i], handler: actionHandlers[i])
-            alert.addAction(action)
-        }
-        target.present(alert, animated: true, completion: nil)
-    }
 }
