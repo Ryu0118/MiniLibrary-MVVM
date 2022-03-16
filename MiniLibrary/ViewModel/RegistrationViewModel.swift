@@ -94,43 +94,10 @@ class RegistrationViewModel : RegistrationViewModelType, RegistrationViewModelIn
         
         registrationSubject
             .asObservable()
-            .subscribe {[weak self] registration in
-                guard let registration = registration.element,
-                      let self = self else { return }
-                
-                print(registration)
-                
-                Auth.auth().createUser(withEmail: registration.email, password: registration.password, completion: { result, error in
-                    
-                    if let user = result?.user {
-                        print("ユーザー作成完了 uid:" + user.uid)
-                        
-                        Firestore.firestore()
-                            .collection("users")
-                            .document(user.uid)
-                            .setData([
-                                "name" : registration.name
-                            ], completion: { error in
-                                if let error = error {
-                                    print("Firestore 新規登録失敗" + error.localizedDescription)
-                                    self.isSuccessRegistration.accept(false)
-                                }else{
-                                    print("ユーザー作成完了 name:" + registration.name)
-                                    self.isSuccessRegistration.accept(true)
-                                }
-                            })
-                    }
-                    else if let error = error {
-                        print("Firebase Auth 新規登録失敗" + error.localizedDescription)
-                        self.isSuccessRegistration.accept(false)
-                    }
-                    else {
-                        print("ユーザーが見つかりませんでした")
-                        self.isSuccessRegistration.accept(false)
-                    }
-                    
-                })
+            .flatMapLatest { registration in
+                return FirebaseUtil.createUser(registration: registration)
             }
+            .bind(to: self.isSuccessRegistration)
             .disposed(by: disposeBag)
         
     }

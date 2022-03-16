@@ -12,10 +12,20 @@
 		237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1A27E0C0AB00C1731C /* Registration.swift */; };
 		237E7C1D27E0CB5F00C1731C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */; };
 		237E7C1F27E0D44000C1731C /* LoginInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1E27E0D44000C1731C /* LoginInfo.swift */; };
-		237E7C2127E0D8ED00C1731C /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2027E0D8ED00C1731C /* UIAlertController.swift */; };
+		237E7C2127E0D8ED00C1731C /* UIAlertController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2027E0D8ED00C1731C /* UIAlertController+.swift */; };
+		237E7C2327E1AD5D00C1731C /* RequireLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2227E1AD5D00C1731C /* RequireLogin.swift */; };
+		237E7C2527E1B60200C1731C /* FirebaseUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2427E1B60200C1731C /* FirebaseUtil.swift */; };
+		237E7C2727E1BC1100C1731C /* LibraryListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2627E1BC1100C1731C /* LibraryListCell.swift */; };
+		237E7C2927E1BDB400C1731C /* CircleIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2827E1BDB400C1731C /* CircleIconView.swift */; };
+		237E7C2B27E1C14600C1731C /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2A27E1C14600C1731C /* UserListView.swift */; };
+		237E7C2D27E1CA7900C1731C /* LibraryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2C27E1CA7900C1731C /* LibraryListViewModel.swift */; };
+		237E7C2F27E1CB5E00C1731C /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C2E27E1CB5E00C1731C /* Library.swift */; };
+		237E7C3127E1FD2600C1731C /* LibraryEntranceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C3027E1FD2600C1731C /* LibraryEntranceViewController.swift */; };
+		237E7C3327E2197400C1731C /* MiniLibraryAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */; };
+		237E7C3527E2330200C1731C /* LibraryEntranceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */; };
 		23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317127E041BC001C7BC2 /* AppDelegate.swift */; };
 		23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317327E041BC001C7BC2 /* SceneDelegate.swift */; };
-		23D7317627E041BC001C7BC2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317527E041BC001C7BC2 /* ViewController.swift */; };
+		23D7317627E041BC001C7BC2 /* LibraryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317527E041BC001C7BC2 /* LibraryListViewController.swift */; };
 		23D7317B27E041BE001C7BC2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D7317A27E041BE001C7BC2 /* Assets.xcassets */; };
 		23D7317E27E041BE001C7BC2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23D7317C27E041BE001C7BC2 /* LaunchScreen.storyboard */; };
 		23D7318927E041BF001C7BC2 /* MiniLibraryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7318827E041BF001C7BC2 /* MiniLibraryTests.swift */; };
@@ -58,11 +68,21 @@
 		237E7C1A27E0C0AB00C1731C /* Registration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registration.swift; sourceTree = "<group>"; };
 		237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		237E7C1E27E0D44000C1731C /* LoginInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInfo.swift; sourceTree = "<group>"; };
-		237E7C2027E0D8ED00C1731C /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
+		237E7C2027E0D8ED00C1731C /* UIAlertController+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+.swift"; sourceTree = "<group>"; };
+		237E7C2227E1AD5D00C1731C /* RequireLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequireLogin.swift; sourceTree = "<group>"; };
+		237E7C2427E1B60200C1731C /* FirebaseUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtil.swift; sourceTree = "<group>"; };
+		237E7C2627E1BC1100C1731C /* LibraryListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListCell.swift; sourceTree = "<group>"; };
+		237E7C2827E1BDB400C1731C /* CircleIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleIconView.swift; sourceTree = "<group>"; };
+		237E7C2A27E1C14600C1731C /* UserListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
+		237E7C2C27E1CA7900C1731C /* LibraryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListViewModel.swift; sourceTree = "<group>"; };
+		237E7C2E27E1CB5E00C1731C /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
+		237E7C3027E1FD2600C1731C /* LibraryEntranceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntranceViewController.swift; sourceTree = "<group>"; };
+		237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniLibraryAlertController.swift; sourceTree = "<group>"; };
+		237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntranceViewModel.swift; sourceTree = "<group>"; };
 		23D7316E27E041BC001C7BC2 /* MiniLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D7317127E041BC001C7BC2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23D7317327E041BC001C7BC2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		23D7317527E041BC001C7BC2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		23D7317527E041BC001C7BC2 /* LibraryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListViewController.swift; sourceTree = "<group>"; };
 		23D7317A27E041BE001C7BC2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		23D7317D27E041BE001C7BC2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		23D7317F27E041BE001C7BC2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -182,6 +202,9 @@
 				23D731AF27E05605001C7BC2 /* MiniLibraryLabel.swift */,
 				23D731B227E05730001C7BC2 /* AuthTextField.swift */,
 				23D731B727E06585001C7BC2 /* RegisterButton.swift */,
+				237E7C2627E1BC1100C1731C /* LibraryListCell.swift */,
+				237E7C2827E1BDB400C1731C /* CircleIconView.swift */,
+				237E7C2A27E1C14600C1731C /* UserListView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -191,6 +214,8 @@
 			children = (
 				23D731BD27E07E10001C7BC2 /* LoginViewModel.swift */,
 				237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */,
+				237E7C2C27E1CA7900C1731C /* LibraryListViewModel.swift */,
+				237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -198,8 +223,10 @@
 		23D731A327E04F73001C7BC2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				237E7C2427E1B60200C1731C /* FirebaseUtil.swift */,
 				237E7C1A27E0C0AB00C1731C /* Registration.swift */,
 				237E7C1E27E0D44000C1731C /* LoginInfo.swift */,
+				237E7C2E27E1CB5E00C1731C /* Library.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -211,7 +238,7 @@
 				23D731AB27E0548A001C7BC2 /* UIColor+.swift */,
 				23D731B927E06B42001C7BC2 /* Reactive+.swift */,
 				23D731BB27E06C65001C7BC2 /* UIStackView+.swift */,
-				237E7C2027E0D8ED00C1731C /* UIAlertController.swift */,
+				237E7C2027E0D8ED00C1731C /* UIAlertController+.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -219,9 +246,11 @@
 		23D731B127E056DE001C7BC2 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				23D7317527E041BC001C7BC2 /* ViewController.swift */,
+				23D7317527E041BC001C7BC2 /* LibraryListViewController.swift */,
 				23D731A427E0500F001C7BC2 /* LoginViewController.swift */,
 				23D731A627E0503F001C7BC2 /* RegistrationViewController.swift */,
+				237E7C3027E1FD2600C1731C /* LibraryEntranceViewController.swift */,
+				237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -241,6 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				23D731C027E0836E001C7BC2 /* Regex.swift */,
+				237E7C2227E1AD5D00C1731C /* RequireLogin.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -509,20 +539,30 @@
 			files = (
 				23D731A527E0500F001C7BC2 /* LoginViewController.swift in Sources */,
 				23D731AC27E0548A001C7BC2 /* UIColor+.swift in Sources */,
-				23D7317627E041BC001C7BC2 /* ViewController.swift in Sources */,
+				237E7C3127E1FD2600C1731C /* LibraryEntranceViewController.swift in Sources */,
+				23D7317627E041BC001C7BC2 /* LibraryListViewController.swift in Sources */,
 				23D731C127E0836E001C7BC2 /* Regex.swift in Sources */,
 				23D731B027E05605001C7BC2 /* MiniLibraryLabel.swift in Sources */,
+				237E7C3527E2330200C1731C /* LibraryEntranceViewModel.swift in Sources */,
 				23D731AA27E0547F001C7BC2 /* UIFont+.swift in Sources */,
 				23D731BE27E07E10001C7BC2 /* LoginViewModel.swift in Sources */,
 				23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */,
 				237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */,
 				23D731B327E05730001C7BC2 /* AuthTextField.swift in Sources */,
-				237E7C2127E0D8ED00C1731C /* UIAlertController.swift in Sources */,
+				237E7C2127E0D8ED00C1731C /* UIAlertController+.swift in Sources */,
 				23D731BA27E06B42001C7BC2 /* Reactive+.swift in Sources */,
+				237E7C2327E1AD5D00C1731C /* RequireLogin.swift in Sources */,
+				237E7C2727E1BC1100C1731C /* LibraryListCell.swift in Sources */,
 				237E7C1F27E0D44000C1731C /* LoginInfo.swift in Sources */,
+				237E7C2927E1BDB400C1731C /* CircleIconView.swift in Sources */,
 				237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */,
+				237E7C2B27E1C14600C1731C /* UserListView.swift in Sources */,
+				237E7C2D27E1CA7900C1731C /* LibraryListViewModel.swift in Sources */,
 				23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */,
+				237E7C2527E1B60200C1731C /* FirebaseUtil.swift in Sources */,
 				23D731BC27E06C65001C7BC2 /* UIStackView+.swift in Sources */,
+				237E7C3327E2197400C1731C /* MiniLibraryAlertController.swift in Sources */,
+				237E7C2F27E1CB5E00C1731C /* Library.swift in Sources */,
 				23D731B827E06585001C7BC2 /* RegisterButton.swift in Sources */,
 				23D731A727E0503F001C7BC2 /* RegistrationViewController.swift in Sources */,
 			);
@@ -701,6 +741,7 @@
 				INFOPLIST_FILE = MiniLibrary/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -713,7 +754,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -730,6 +771,7 @@
 				INFOPLIST_FILE = MiniLibrary/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -742,7 +784,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

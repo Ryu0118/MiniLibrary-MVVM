@@ -21,25 +21,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        setRootViewControllerToWindow(UINavigationController(rootViewController: LibraryListViewController()), windowScene: windowScene)
+        
         guard let currentUser = Auth.auth().currentUser else {
-            window = UIWindow(windowScene: windowScene)
-            window?.rootViewController = LoginViewController()
-            window?.makeKeyAndVisible()
+            setRootViewControllerToWindow(LoginViewController(), windowScene: windowScene)
             return
         }
         currentUser.getIDToken(completion: { [weak self] idToken, error in
             if let token = idToken {
                 self?.firebaseToken = token
-                self?.window = UIWindow(windowScene: windowScene)
-                self?.window?.rootViewController = ViewController()
-                self?.window?.makeKeyAndVisible()
                 return
             }
-            self?.window = UIWindow(windowScene: windowScene)
-            self?.window?.rootViewController = LoginViewController()
-            self?.window?.makeKeyAndVisible()
+            self?.setRootViewControllerToWindow(LoginViewController(), windowScene: windowScene)
             return
         })
+    }
+    
+    private func setRootViewControllerToWindow(_ rootViewController: UIViewController, windowScene: UIWindowScene) {
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = rootViewController
+        window?.makeKeyAndVisible()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

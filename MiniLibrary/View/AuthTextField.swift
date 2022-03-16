@@ -73,6 +73,11 @@ class AuthTextField : UIView {
         field.becomeFirstResponder()
     }
     
+    @discardableResult
+    override func becomeFirstResponder() -> Bool {
+        return field.becomeFirstResponder()
+    }
+    
 }
  
 class AuthTextFieldCore : UITextField {

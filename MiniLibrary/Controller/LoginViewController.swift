@@ -74,7 +74,7 @@ extension LoginViewController {
             .withLatestFrom(viewModel.outputs.isEnabledButton.asObservable())
             .do {[unowned self] isEnabled in
                 if !isEnabled {
-                    UIAlertController.show(target: self, title: "正しいメールアドレスを入力してください", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                    UIAlertController.show(target: self, title: "正しいメールアドレス、パスワードを入力してください", message: nil, prefferedStyle: .alert, actionTitles: ["OK"], actionStyles: [.default], actionHandlers: [nil])
                 }else{
                     KRProgressHUD.show()
                 }
@@ -102,12 +102,12 @@ extension LoginViewController {
             }
             .drive {[unowned self] isSuccess in
                 if isSuccess {
-                    let vc = ViewController()
+                    let vc = UINavigationController(rootViewController: LibraryListViewController())
                     vc.modalPresentationStyle = .fullScreen
                     vc.modalTransitionStyle = .crossDissolve
                     present(vc, animated: true, completion: nil)
                 }else{
-                    UIAlertController.show(target: self, title: "失敗", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                    UIAlertController.show(target: self, title: nil, message: "ログインに失敗しました。メールアドレスまたはパスワードが違います。", prefferedStyle: .alert, actionTitles: ["OK"], actionStyles: [.default], actionHandlers: [nil])
                 }
             }
             .disposed(by: disposeBag)

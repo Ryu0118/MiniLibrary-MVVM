@@ -72,24 +72,10 @@ class LoginViewModel : LoginViewModelType, LoginViewModelInputs, LoginViewModelO
         
         loginSubject
             .asObservable()
-            .subscribe {[weak self] info in
-                guard let self = self,
-                      let info = info.element else { return }
-                
-                Auth.auth().signIn(withEmail: info.email, password: info.password, completion: { result, error in
-                    if let _ = result?.user {
-                        self.isSuccessLogin.accept(true)
-                    }
-                    else if let error = error {
-                        print("Failed Login: ", error.localizedDescription)
-                        self.isSuccessLogin.accept(false)
-                    }else{
-                        print("User Not found")
-                        self.isSuccessLogin.accept(false)
-                    }
-                })
-                
+            .flatMapLatest { info in
+                return FirebaseUtil.signIn(info: info)
             }
+            .bind(to: self.isSuccessLogin)
             .disposed(by: disposeBag)
         
     }

@@ -13,6 +13,14 @@ extension UIColor {
         return UIColor(red: 244, green: 239, blue: 243, alpha: 1)
     }
     
+    static var appTextColor: UIColor {
+        return UIColor(red: 18, green: 32, blue: 52, alpha: 1)
+    }
+    
+    static var grayTextColor: UIColor {
+        return UIColor(red: 124, green: 146, blue: 167, alpha: 1)
+    }
+    
     convenience init(hex: String, alpha: CGFloat = 1.0) {
         let v = Int("000000" + hex, radix: 16) ?? 0
         let r = CGFloat(v / Int(powf(256, 2)) % 256) / 255
@@ -24,4 +32,5 @@ extension UIColor {
     convenience init(red: Int, green: Int, blue: Int, alpha: CGFloat) {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: alpha)
     }
+    
 }

@@ -76,7 +76,7 @@ extension RegistrationViewController {
             .withLatestFrom(viewModel.outputs.isEnabledButton.asObservable())
             .do {[unowned self] isEnabled in
                 if !isEnabled {
-                    UIAlertController.show(target: self, title: "正しいメールアドレスを入力してください", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                    UIAlertController.show(target: self, title: "登録失敗", message: "正しく入力されていません。パスワードは8文字以上の英数字で入力してください", prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
                 }else{
                     KRProgressHUD.show()
                 }
@@ -105,12 +105,12 @@ extension RegistrationViewController {
             .drive {[unowned self] isSuccess in
                 
                 if isSuccess {
-                    let vc = ViewController()
+                    let vc = UINavigationController(rootViewController: LibraryListViewController())
                     vc.modalPresentationStyle = .fullScreen
                     vc.modalTransitionStyle = .crossDissolve
                     present(vc, animated: true, completion: nil)
                 }else{
-                    UIAlertController.show(target: self, title: "失敗", message: nil, prefferedStyle: .alert, actionTitles: ["おけ"], actionStyles: [.default], actionHandlers: [nil])
+                    UIAlertController.show(target: self, title: nil, message: "新規登録に失敗しました。再度お試しください。", prefferedStyle: .alert, actionTitles: ["OK"], actionStyles: [.default], actionHandlers: [nil])
                 }
             }
             .disposed(by: disposeBag)

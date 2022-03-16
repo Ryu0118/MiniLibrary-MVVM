@@ -17,4 +17,7 @@ extension UIFont {
         return UIFont(name: "AvenirNextCondensed-HeavyItalic", size: size)!
     }
     
+    static var appAttributes: [NSAttributedString.Key : Any] = [
+        .font: UIFont.appFont
+    ]
 }
