@@ -58,9 +58,9 @@ class LibraryListCell : UICollectionViewCell {
     }
     
     func update(library: Library) {
-        titleLabel.text = library.title
-        userListView.users = library.users
-        bookCountLabel.text = "蔵書数: \(library.bookCount)"
+        titleLabel.text = library.library_name
+        userListView.usersData = library.usersNameAndColorCode
+        bookCountLabel.text = "蔵書数: \(library.books.count)"
     }
     
 }

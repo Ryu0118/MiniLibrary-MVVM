@@ -13,7 +13,7 @@ class UserListView : UIView {
     
     static let maxUser = 6
     
-    var users: [String]! {
+    var usersData: [(String, String)]! {
         didSet {
             setup()
         }
@@ -29,8 +29,8 @@ class UserListView : UIView {
     
     private let otherLabel = MiniLibraryLabel(size: 12)
     
-    init(users: [String]) {
-        self.users = users
+    init(usersData: [(String, String)]) {
+        self.usersData = usersData
         super.init(frame: .zero)
         setup()
     }
@@ -47,8 +47,8 @@ class UserListView : UIView {
             $0.edges.equalToSuperview().inset(ConstraintInsets(top: 4, left: 4, bottom: 4, right: 4))
         }
         
-        var circleIcons = users.map { user -> CircleIconView in
-            return CircleIconView(initialName: user)
+        var circleIcons = usersData.map { user, colorCode -> CircleIconView in
+            return CircleIconView(initialName: user, colorCode: colorCode)
         }
         
         if circleIcons.count > UserListView.maxUser {

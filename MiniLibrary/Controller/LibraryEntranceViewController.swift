@@ -15,15 +15,16 @@ class LibraryEntranceViewController: UIViewController {
     var rightBarItem: UIBarButtonItem!
     var entranceLibraryView: EntranceLibraryView!
     
-    private var viewModel = LibraryEntranceViewModel()
+    var viewModel = LibraryEntranceViewModel()
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = UIColor(hex: "000000", alpha: 0.7)
         setupViews()
         bind()
+        setupGesture()
     }
 }
 
@@ -64,23 +65,46 @@ extension LibraryEntranceViewController {
         
         viewModel.outputs.isSuccessedAddLibrary
             .asObservable()
-            .subscribe(onNext: { _ in
-                print("作成が完了しました")
-            }, onError: {[weak self] error in
-                let alert = MiniLibraryAlertController(title: "作成に失敗しました", message: error.localizedDescription, textFieldConfiguration: nil, actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
-                self?.present(alert, animated: true, completion: nil)
+            .subscribe(onNext: {[weak self] message in
+                if !message.isEmpty {
+                    let alert = MiniLibraryAlertController(title: "作成に失敗しました", message: message, textFieldConfiguration: nil, actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
+                    self?.present(alert, animated: true, completion: nil)
+                }else{
+                    let alert = MiniLibraryAlertController(title: "作成が完了しました", message: message, textFieldConfiguration: nil)
+                    alert.addActions([MiniLibraryAlertAction(message: "OK", option: .normal, handler: {
+                        alert.dismiss(animated: true)
+                        self?.dismissController()
+                    })])
+                    self?.present(alert, animated: true, completion: nil)
+                }
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.isSuccessedParticipateInLibrary
             .asObservable()
-            .subscribe(onNext: { _ in
-                print("参加が完了しました")
-            }, onError: {[weak self] error in
-                let alert = MiniLibraryAlertController(title: "参加に失敗しました", message: error.localizedDescription, textFieldConfiguration: nil, actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
-                self?.present(alert, animated: true, completion: nil)
+            .subscribe(onNext: {[weak self] message in
+                if !message.isEmpty {
+                    let alert = MiniLibraryAlertController(title: "参加に失敗しました", message: message, textFieldConfiguration: nil, actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
+                    self?.present(alert, animated: true, completion: nil)
+                }else{
+                    let alert = MiniLibraryAlertController(title: "参加が完了しました", message: message, textFieldConfiguration: nil)
+                    alert.addActions([MiniLibraryAlertAction(message: "OK", option: .normal, handler: {
+                        alert.dismiss(animated: true)
+                        self?.dismissController()
+                    })])
+                    self?.present(alert, animated: true, completion: nil)
+                }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func setupGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissController))
+        view.addGestureRecognizer(gesture)
+    }
+    
+    @objc private func dismissController() {
+        viewModel.completionSubject.onNext(())
     }
     
     private func setupViews() {

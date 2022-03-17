@@ -15,7 +15,7 @@ target 'MiniLibrary' do
   pod 'Firebase/Firestore'
   pod 'RxKeyboard'
   pod 'RxDataSources'
-  pod 'RxNuke'
+  pod 'RxNuku'
   pod 'KRProgressHUD'
   target 'MiniLibraryTests' do
     inherit! :search_paths

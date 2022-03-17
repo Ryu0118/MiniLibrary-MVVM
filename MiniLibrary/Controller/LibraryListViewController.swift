@@ -12,15 +12,15 @@ import RxSwift
 import RxDataSources
 import SnapKit
 
-enum LibrarySection {
+enum LibraryListSection {
     case library
 }
 
-enum LibraryItem {
+enum LibraryListItem {
     case library(library: Library)
 }
 
-typealias LibraryListSectionModel = SectionModel<LibrarySection, LibraryItem>
+typealias LibraryListSectionModel = SectionModel<LibraryListSection, LibraryListItem>
 
 class LibraryListViewController: UIViewController, RequireLogin {
     
@@ -45,7 +45,7 @@ class LibraryListViewController: UIViewController, RequireLogin {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .appBackgroundColor
+        view.backgroundColor = .white
         
         setupNavigationBar()
         setName()
@@ -53,6 +53,13 @@ class LibraryListViewController: UIViewController, RequireLogin {
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if leftBarLabel.isHidden {
+            leftBarLabel.isHidden = false
+            titleLabel?.isHidden = true
+        }
+    }
     
 }
 
@@ -70,13 +77,16 @@ extension LibraryListViewController {
         collectionView.register(LibraryListCell.self, forCellWithReuseIdentifier: "LibraryListCell")
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
         collectionView.rx.itemSelected
-            .map { [weak self] indexPath -> LibraryItem? in
+            .map { [weak self] indexPath -> LibraryListItem? in
                 return self?.dataSource[indexPath]
             }
             .subscribe { [weak self] item in
                 guard let item = item.element, let item = item else { return }
                 switch item {
                 case .library(let library):
+                    let libraryVC = LibraryViewController(library: library)
+                    self?.navigationController?.pushViewController(libraryVC, animated: true)
+                    self?.leftBarLabel.isHidden = true
                     break
                 }
             }
@@ -84,7 +94,8 @@ extension LibraryListViewController {
         
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints {
-            $0.top.bottom.left.right.equalToSuperview()
+            $0.top.left.right.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
         }
         
     }
@@ -103,6 +114,14 @@ extension LibraryListViewController {
                 if let name = name.element {
                     print(name)
                     FirebaseUtil.userName = name
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        getColorCode()
+            .subscribe { colorCode in
+                if let code = colorCode.element {
+                    FirebaseUtil.colorCode = code
                 }
             }
             .disposed(by: disposeBag)
@@ -130,8 +149,10 @@ extension LibraryListViewController {
             rightBarItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addLibraryButtonTapped))
             rightBarItem.tintColor = .black
             navigationBar.shadowImage = UIImage()
+            navigationBar.backgroundColor = .white
             navigationBar.tintColor = .white
             navigationBar.barTintColor = .white
+            navigationItem.title = ""
             navigationItem.rightBarButtonItem = self.rightBarItem
             
         }
@@ -158,8 +179,17 @@ extension LibraryListViewController {
             view.addSubview(entranceVC.view)
             entranceVC.willMove(toParent: self)
             entranceVC.view.snp.makeConstraints {
-                $0.top.bottom.left.right.equalTo(view.safeAreaLayoutGuide)
+                $0.bottom.left.right.equalToSuperview()
+                $0.top.equalTo(view.safeAreaLayoutGuide)
             }
+            
+            entranceVC.viewModel.completionSubject
+                .asObservable()
+                .asDriver(onErrorJustReturn: ())
+                .drive {[weak self] _ in
+                    self?.exitButtonPressed()
+                }
+                .disposed(by: disposeBag)
             
         }
     }

@@ -8,6 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		1DE0199E4FF6C2A079971608 /* Pods_MiniLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98CD13870ECF24C57530843 /* Pods_MiniLibrary.framework */; };
+		232D20D227E2E44C00B45BAD /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20D127E2E44C00B45BAD /* LibraryViewController.swift */; };
+		232D20D527E2EC3600B45BAD /* GroupedButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20D427E2EC3600B45BAD /* GroupedButtonView.swift */; };
+		232D20D727E30B6D00B45BAD /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20D627E30B6C00B45BAD /* UserListViewController.swift */; };
+		232D20D927E3101B00B45BAD /* MemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20D827E3101B00B45BAD /* MemberCell.swift */; };
+		232D20DB27E3147200B45BAD /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20DA27E3147200B45BAD /* UserListViewModel.swift */; };
+		232D20DD27E3295000B45BAD /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20DC27E3295000B45BAD /* LibraryViewModel.swift */; };
+		232D20DF27E3322E00B45BAD /* RentingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20DE27E3322E00B45BAD /* RentingCell.swift */; };
+		232D20E127E3324B00B45BAD /* AllBooksCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20E027E3324B00B45BAD /* AllBooksCell.swift */; };
+		232D20E627E36B3300B45BAD /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20E527E36B3300B45BAD /* UIImage+.swift */; };
+		232D20E827E36F3500B45BAD /* BookInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20E727E36F3500B45BAD /* BookInfo.swift */; };
+		232D20EA27E36FD200B45BAD /* DateUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20E927E36FD200B45BAD /* DateUtil.swift */; };
+		232D20EC27E36FEA00B45BAD /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20EB27E36FEA00B45BAD /* Date.swift */; };
+		232D20EE27E378AF00B45BAD /* PairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20ED27E378AF00B45BAD /* PairView.swift */; };
 		237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */; };
 		237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1A27E0C0AB00C1731C /* Registration.swift */; };
 		237E7C1D27E0CB5F00C1731C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */; };
@@ -64,6 +77,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		232D20D127E2E44C00B45BAD /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
+		232D20D427E2EC3600B45BAD /* GroupedButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedButtonView.swift; sourceTree = "<group>"; };
+		232D20D627E30B6C00B45BAD /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
+		232D20D827E3101B00B45BAD /* MemberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberCell.swift; sourceTree = "<group>"; };
+		232D20DA27E3147200B45BAD /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
+		232D20DC27E3295000B45BAD /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
+		232D20DE27E3322E00B45BAD /* RentingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentingCell.swift; sourceTree = "<group>"; };
+		232D20E027E3324B00B45BAD /* AllBooksCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllBooksCell.swift; sourceTree = "<group>"; };
+		232D20E527E36B3300B45BAD /* UIImage+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+.swift"; sourceTree = "<group>"; };
+		232D20E727E36F3500B45BAD /* BookInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookInfo.swift; sourceTree = "<group>"; };
+		232D20E927E36FD200B45BAD /* DateUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtil.swift; sourceTree = "<group>"; };
+		232D20EB27E36FEA00B45BAD /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		232D20ED27E378AF00B45BAD /* PairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairView.swift; sourceTree = "<group>"; };
 		237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		237E7C1A27E0C0AB00C1731C /* Registration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registration.swift; sourceTree = "<group>"; };
 		237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -141,6 +167,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		232D20E227E3324F00B45BAD /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				232D20E027E3324B00B45BAD /* AllBooksCell.swift */,
+				232D20DE27E3322E00B45BAD /* RentingCell.swift */,
+				232D20D827E3101B00B45BAD /* MemberCell.swift */,
+				237E7C2627E1BC1100C1731C /* LibraryListCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		23D7316527E041BC001C7BC2 = {
 			isa = PBXGroup;
 			children = (
@@ -199,12 +236,14 @@
 		23D731A127E04F67001C7BC2 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				232D20E227E3324F00B45BAD /* Cells */,
 				23D731AF27E05605001C7BC2 /* MiniLibraryLabel.swift */,
+				232D20D427E2EC3600B45BAD /* GroupedButtonView.swift */,
 				23D731B227E05730001C7BC2 /* AuthTextField.swift */,
 				23D731B727E06585001C7BC2 /* RegisterButton.swift */,
-				237E7C2627E1BC1100C1731C /* LibraryListCell.swift */,
 				237E7C2827E1BDB400C1731C /* CircleIconView.swift */,
 				237E7C2A27E1C14600C1731C /* UserListView.swift */,
+				232D20ED27E378AF00B45BAD /* PairView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -216,6 +255,8 @@
 				237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */,
 				237E7C2C27E1CA7900C1731C /* LibraryListViewModel.swift */,
 				237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */,
+				232D20DA27E3147200B45BAD /* UserListViewModel.swift */,
+				232D20DC27E3295000B45BAD /* LibraryViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -227,6 +268,7 @@
 				237E7C1A27E0C0AB00C1731C /* Registration.swift */,
 				237E7C1E27E0D44000C1731C /* LoginInfo.swift */,
 				237E7C2E27E1CB5E00C1731C /* Library.swift */,
+				232D20E727E36F3500B45BAD /* BookInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -239,6 +281,8 @@
 				23D731B927E06B42001C7BC2 /* Reactive+.swift */,
 				23D731BB27E06C65001C7BC2 /* UIStackView+.swift */,
 				237E7C2027E0D8ED00C1731C /* UIAlertController+.swift */,
+				232D20E527E36B3300B45BAD /* UIImage+.swift */,
+				232D20EB27E36FEA00B45BAD /* Date.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -251,6 +295,8 @@
 				23D731A627E0503F001C7BC2 /* RegistrationViewController.swift */,
 				237E7C3027E1FD2600C1731C /* LibraryEntranceViewController.swift */,
 				237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */,
+				232D20D127E2E44C00B45BAD /* LibraryViewController.swift */,
+				232D20D627E30B6C00B45BAD /* UserListViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -271,6 +317,7 @@
 			children = (
 				23D731C027E0836E001C7BC2 /* Regex.swift */,
 				237E7C2227E1AD5D00C1731C /* RequireLogin.swift */,
+				232D20E927E36FD200B45BAD /* DateUtil.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -538,19 +585,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				23D731A527E0500F001C7BC2 /* LoginViewController.swift in Sources */,
+				232D20DB27E3147200B45BAD /* UserListViewModel.swift in Sources */,
 				23D731AC27E0548A001C7BC2 /* UIColor+.swift in Sources */,
 				237E7C3127E1FD2600C1731C /* LibraryEntranceViewController.swift in Sources */,
+				232D20D927E3101B00B45BAD /* MemberCell.swift in Sources */,
+				232D20D527E2EC3600B45BAD /* GroupedButtonView.swift in Sources */,
+				232D20D727E30B6D00B45BAD /* UserListViewController.swift in Sources */,
 				23D7317627E041BC001C7BC2 /* LibraryListViewController.swift in Sources */,
 				23D731C127E0836E001C7BC2 /* Regex.swift in Sources */,
+				232D20D227E2E44C00B45BAD /* LibraryViewController.swift in Sources */,
 				23D731B027E05605001C7BC2 /* MiniLibraryLabel.swift in Sources */,
+				232D20EC27E36FEA00B45BAD /* Date.swift in Sources */,
 				237E7C3527E2330200C1731C /* LibraryEntranceViewModel.swift in Sources */,
 				23D731AA27E0547F001C7BC2 /* UIFont+.swift in Sources */,
+				232D20E627E36B3300B45BAD /* UIImage+.swift in Sources */,
 				23D731BE27E07E10001C7BC2 /* LoginViewModel.swift in Sources */,
 				23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */,
 				237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */,
+				232D20DF27E3322E00B45BAD /* RentingCell.swift in Sources */,
+				232D20DD27E3295000B45BAD /* LibraryViewModel.swift in Sources */,
 				23D731B327E05730001C7BC2 /* AuthTextField.swift in Sources */,
 				237E7C2127E0D8ED00C1731C /* UIAlertController+.swift in Sources */,
 				23D731BA27E06B42001C7BC2 /* Reactive+.swift in Sources */,
+				232D20EE27E378AF00B45BAD /* PairView.swift in Sources */,
 				237E7C2327E1AD5D00C1731C /* RequireLogin.swift in Sources */,
 				237E7C2727E1BC1100C1731C /* LibraryListCell.swift in Sources */,
 				237E7C1F27E0D44000C1731C /* LoginInfo.swift in Sources */,
@@ -558,12 +615,15 @@
 				237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */,
 				237E7C2B27E1C14600C1731C /* UserListView.swift in Sources */,
 				237E7C2D27E1CA7900C1731C /* LibraryListViewModel.swift in Sources */,
+				232D20E127E3324B00B45BAD /* AllBooksCell.swift in Sources */,
 				23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */,
 				237E7C2527E1B60200C1731C /* FirebaseUtil.swift in Sources */,
 				23D731BC27E06C65001C7BC2 /* UIStackView+.swift in Sources */,
 				237E7C3327E2197400C1731C /* MiniLibraryAlertController.swift in Sources */,
 				237E7C2F27E1CB5E00C1731C /* Library.swift in Sources */,
 				23D731B827E06585001C7BC2 /* RegisterButton.swift in Sources */,
+				232D20EA27E36FD200B45BAD /* DateUtil.swift in Sources */,
+				232D20E827E36F3500B45BAD /* BookInfo.swift in Sources */,
 				23D731A727E0503F001C7BC2 /* RegistrationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -663,7 +723,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -718,7 +778,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -744,7 +804,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -774,7 +834,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

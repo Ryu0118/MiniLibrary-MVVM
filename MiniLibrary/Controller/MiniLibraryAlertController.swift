@@ -37,6 +37,7 @@ struct TextfieldConfiguration {
 class MiniLibraryAlertController : UIViewController {
     
     let titleText: String?
+    var bigMessage: String?
     var message: String?
     let textfieldConfiguration: TextfieldConfiguration?
     var actions: [MiniLibraryAlertAction]
@@ -59,6 +60,15 @@ class MiniLibraryAlertController : UIViewController {
             messageLabel.textAlignment = .center
         }
     }
+    var bigMessageLabel: MiniLibraryLabel? {
+        didSet {
+            guard let messageLabel = bigMessageLabel else { return }
+            messageLabel.textColor = .appTextColor
+            messageLabel.numberOfLines = 1
+            messageLabel.textAlignment = .center
+        }
+    }
+
     var textField: AuthTextField?
     var leftButton: RegisterButton?
     var rightButton: RegisterButton?
@@ -95,8 +105,9 @@ class MiniLibraryAlertController : UIViewController {
         return view
     }()
     
-    init(title: String? = nil, message: String? = nil, textFieldConfiguration: TextfieldConfiguration? = nil, actions: [MiniLibraryAlertAction] = []) {
+    init(title: String? = nil, bigMessage: String? = nil, message: String? = nil, textFieldConfiguration: TextfieldConfiguration? = nil, actions: [MiniLibraryAlertAction] = []) {
         self.titleText = title
+        self.bigMessage = bigMessage
         self.message = message
         self.textfieldConfiguration = textFieldConfiguration
         self.actions = actions
@@ -146,6 +157,10 @@ class MiniLibraryAlertController : UIViewController {
             titleLabel = MiniLibraryLabel(size: 18)
             titleLabel?.text = titleText
         }
+        if let bigMessage = bigMessage {
+            bigMessageLabel = MiniLibraryLabel(size: 25)
+            bigMessageLabel?.text = bigMessage
+        }
         if let message = message {
             messageLabel = MiniLibraryLabel(size: 12)
             messageLabel?.text = message
@@ -164,7 +179,7 @@ class MiniLibraryAlertController : UIViewController {
             leftButton?.setTitle(actions[0].message, for: .normal)
         }
         
-        vstack.addArrangedSubviews([titleLabel, messageLabel, textField, hstack].compactMap { $0 })
+        vstack.addArrangedSubviews([titleLabel, bigMessageLabel, messageLabel, textField, hstack].compactMap { $0 })
         hstack.addArrangedSubviews([leftButton, rightButton].compactMap { $0 })
         
         alertView.addSubview(vstack)
@@ -270,6 +285,7 @@ class AlertAnimation: NSObject, UIViewControllerAnimatedTransitioning {
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.overrideInheritedOptions, .allowUserInteraction], animations: {
             alert.alertView.alpha = 1
+            alert.baseView.alpha = 0.6
             alert.alertView.transform = .identity
         }, completion: { _ in
             transitionContext.completeTransition(true)

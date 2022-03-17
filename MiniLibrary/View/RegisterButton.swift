@@ -24,6 +24,17 @@ class RegisterButton : UIButton {
         bind()
     }
     
+    init(isBoundAnimationEnabled: Bool, cornerRadius: CGFloat = 0) {
+        super.init(frame: .zero)
+        self.backgroundColor = UIColor(red: 247, green: 105, blue: 102, alpha: 1)
+        self.layer.cornerRadius = cornerRadius
+        self.setTitleColor(.white, for: .normal)
+        self.titleLabel?.font = .appFont(size: 16)
+        if isBoundAnimationEnabled {
+            bind()
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -29,22 +29,24 @@ class LibraryListViewModel: LibraryListViewModelType, LibraryListViewModelInputs
     var inputs: LibraryListViewModelInputs { return self }
     var outputs: LibraryListViewModelOutputs { return self }
     
+    private let disposeBag = DisposeBag()
+    
     //inputs
     
     //outputs
     var items = BehaviorRelay<[LibraryListSectionModel]>(value: [])
     
     func updateItems() {
-        var sections = [LibraryListSectionModel]()
         
-        //create mock data
-        let item1 = LibraryItem.library(library: Library(title: "法政大学図書館", users: ["りき", "たなか", "喜多村","りき", "たなか", "喜多村","りき", "たなか", "喜多村"], bookCount: 20))
-        let item2 = LibraryItem.library(library: Library(title: "明治大学図書館", users: ["澁谷", "上條", "喜多村"], bookCount: 20))
-        let item3 = LibraryItem.library(library: Library(title: "立教大学図書館", users: ["しぶ", "たけし", "つとむ"], bookCount: 20))
-        let librarySection = LibraryListSectionModel(model: .library, items: [item1, item2, item3])
-        sections.append(librarySection)
+        FirebaseUtil.addLibraryListListener()
+            .subscribe {[weak self] libraries in
+                guard let libraries = libraries.element else { return }
+                let libraryItems = libraries.map { LibraryListItem.library(library: $0) }
+                let librarySection = [LibraryListSectionModel(model: .library, items: libraryItems)]
+                self?.items.accept(librarySection)
+            }
+            .disposed(by: disposeBag)
         
-        items.accept(sections)
     }
     
 }

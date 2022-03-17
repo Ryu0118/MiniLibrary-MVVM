@@ -11,11 +11,13 @@ import RxCocoa
 protocol LibraryEntranceViewModelInputs: AnyObject {
     var libraryNameSubject: PublishSubject<String> { get }
     var inviteCodeSubject: PublishSubject<String> { get }
+    var completionSubject: PublishSubject<Void> { get }
 }
 
 protocol LibraryEntranceViewModelOutputs: AnyObject {
-    var isSuccessedAddLibrary: PublishSubject<()> { get }
-    var isSuccessedParticipateInLibrary: PublishSubject<()> { get }
+    var isSuccessedAddLibrary: PublishSubject<String> { get }
+    var isSuccessedParticipateInLibrary: PublishSubject<String> { get }
+    var completionSubject: PublishSubject<Void> { get }
 }
 
 protocol LibraryEntranceViewModelType: AnyObject {
@@ -31,11 +33,11 @@ class LibraryEntranceViewModel: LibraryEntranceViewModelType, LibraryEntranceVie
     //inputs
     var libraryNameSubject = PublishSubject<String>()
     var inviteCodeSubject = PublishSubject<String>()
-
+    var completionSubject = PublishSubject<Void>()
     
     //outputs
-    var isSuccessedAddLibrary = PublishSubject<()>()
-    var isSuccessedParticipateInLibrary = PublishSubject<()>()
+    var isSuccessedAddLibrary = PublishSubject<String>()
+    var isSuccessedParticipateInLibrary = PublishSubject<String>()
     
     private let disposeBag = DisposeBag()
     
