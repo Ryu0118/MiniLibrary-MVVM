@@ -7,6 +7,7 @@
 
 import RxSwift
 import RxCocoa
+import KRProgressHUD
 
 protocol LibraryEntranceViewModelInputs: AnyObject {
     var libraryNameSubject: PublishSubject<String> { get }
@@ -45,17 +46,21 @@ class LibraryEntranceViewModel: LibraryEntranceViewModelType, LibraryEntranceVie
         
         libraryNameSubject
             .asObservable()
+            .do { _ in KRProgressHUD.show() }
             .flatMapLatest { name in
                 return FirebaseUtil.addLibrary(libraryName: name, administrator: FirebaseUtil.userName!)
             }
+            .do { _ in KRProgressHUD.dismiss() }
             .bind(to: outputs.isSuccessedAddLibrary)
             .disposed(by: disposeBag)
         
         inviteCodeSubject
             .asObservable()
+            .do { _ in KRProgressHUD.show() }
             .flatMapLatest { code in
                 return FirebaseUtil.participateInLibrary(inviteCode: code)
             }
+            .do { _ in KRProgressHUD.dismiss() }
             .bind(to: outputs.isSuccessedParticipateInLibrary)
             .disposed(by: disposeBag)
         

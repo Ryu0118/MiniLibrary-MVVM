@@ -39,6 +39,7 @@ class MiniLibraryAlertController : UIViewController {
     let titleText: String?
     var bigMessage: String?
     var message: String?
+    var image: UIImage?
     let textfieldConfiguration: TextfieldConfiguration?
     var actions: [MiniLibraryAlertAction]
     
@@ -46,7 +47,8 @@ class MiniLibraryAlertController : UIViewController {
         didSet {
             guard let titleLabel = titleLabel else { return }
             titleLabel.textColor = .appTextColor
-            titleLabel.numberOfLines = 5
+            titleLabel.numberOfLines = 0
+            titleLabel.sizeToFit()
             titleLabel.lineBreakMode = .byTruncatingTail
             titleLabel.textAlignment = .center
         }
@@ -55,7 +57,7 @@ class MiniLibraryAlertController : UIViewController {
         didSet {
             guard let messageLabel = messageLabel else { return }
             messageLabel.textColor = .grayTextColor
-            messageLabel.numberOfLines = 5
+            messageLabel.numberOfLines = 7
             messageLabel.lineBreakMode = .byTruncatingTail
             messageLabel.textAlignment = .center
         }
@@ -66,6 +68,12 @@ class MiniLibraryAlertController : UIViewController {
             messageLabel.textColor = .appTextColor
             messageLabel.numberOfLines = 1
             messageLabel.textAlignment = .center
+        }
+    }
+    var imageView: UIImageView? {
+        didSet {
+            guard let imageView = imageView else { return }
+            imageView.contentMode = .scaleAspectFit
         }
     }
 
@@ -105,8 +113,9 @@ class MiniLibraryAlertController : UIViewController {
         return view
     }()
     
-    init(title: String? = nil, bigMessage: String? = nil, message: String? = nil, textFieldConfiguration: TextfieldConfiguration? = nil, actions: [MiniLibraryAlertAction] = []) {
+    init(title: String? = nil, image: UIImage? = nil, bigMessage: String? = nil, message: String? = nil, textFieldConfiguration: TextfieldConfiguration? = nil, actions: [MiniLibraryAlertAction] = []) {
         self.titleText = title
+        self.image = image
         self.bigMessage = bigMessage
         self.message = message
         self.textfieldConfiguration = textFieldConfiguration
@@ -127,6 +136,14 @@ class MiniLibraryAlertController : UIViewController {
         textField?.becomeFirstResponder()
     }
     
+    func addActions(_ actions: [MiniLibraryAlertAction]) {
+        self.actions.append(contentsOf: actions)
+    }
+    
+    func addAction(_ action: MiniLibraryAlertAction) {
+        self.actions.append(action)
+    }
+    
     private func setupViewController() {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
@@ -145,18 +162,19 @@ class MiniLibraryAlertController : UIViewController {
         alertView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.7)
+            $0.height.lessThanOrEqualToSuperview().multipliedBy(0.85)
         }
     }
     
-    func addActions(_ actions: [MiniLibraryAlertAction]) {
-        self.actions.append(contentsOf: actions)
-    }
-    
     private func setupCustomView() {
+        if let image = image {
+            imageView = UIImageView(image: image)
+        }
         if let titleText = titleText {
             titleLabel = MiniLibraryLabel(size: 18)
             titleLabel?.text = titleText
         }
+
         if let bigMessage = bigMessage {
             bigMessageLabel = MiniLibraryLabel(size: 25)
             bigMessageLabel?.text = bigMessage
@@ -179,7 +197,7 @@ class MiniLibraryAlertController : UIViewController {
             leftButton?.setTitle(actions[0].message, for: .normal)
         }
         
-        vstack.addArrangedSubviews([titleLabel, bigMessageLabel, messageLabel, textField, hstack].compactMap { $0 })
+        vstack.addArrangedSubviews([imageView, titleLabel, bigMessageLabel, messageLabel, textField, hstack].compactMap { $0 })
         hstack.addArrangedSubviews([leftButton, rightButton].compactMap { $0 })
         
         alertView.addSubview(vstack)
@@ -202,6 +220,17 @@ class MiniLibraryAlertController : UIViewController {
             $0.width.equalToSuperview().multipliedBy(0.45)
             $0.height.equalTo(35)
         }
+        imageView?.snp.makeConstraints {
+            $0.height.equalTo(280)
+        }
+        titleLabel?.snp.makeConstraints {
+            $0.height.lessThanOrEqualTo(75)
+            $0.width.equalToSuperview()
+        }
+//        messageLabel?.snp.makeConstraints {
+//            $0.height.lessThanOrEqualTo(140).priority(.low)
+//            $0.height.lessThanOrEqualTo(120).priority(.required)
+//        }
     }
     
     private func bind() {
@@ -306,4 +335,3 @@ class AlertAnimation: NSObject, UIViewControllerAnimatedTransitioning {
     }
  
 }
-

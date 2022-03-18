@@ -20,18 +20,32 @@ class AllBooksCell : UICollectionViewCell {
         didSet {
             pairView = PairView(first: UIImageView(), second: MiniLibraryLabel(size: 14))
             
-            titleLabel.text = bookinfo.name
+            titleLabel.text = bookinfo.title
             titleLabel.lineBreakMode = .byTruncatingTail
             titleLabel.numberOfLines = 3
             
             if let url = bookinfo.imageURL {
+                
+                let pipeline = ImagePipeline.shared
                 thumbnail.image = UIImage.noimage
-                ImagePipeline.shared.rx.loadImage(with: URL(string: url)!)
-                    .subscribe(onSuccess: {[weak self] in
-                        guard let self = self else { return }
-                        self.thumbnail.image = $0.image
-                    })
-                    .disposed(by: disposeBag)
+                
+                if let rowRes = bookinfo.lowResImageURL { //handle low to high resolution
+                    Observable.concat(pipeline.rx.loadImage(with: URL(string: rowRes)!).asObservable(),
+                                      pipeline.rx.loadImage(with: URL(string: url)!).asObservable()
+                    )
+                        .subscribe(onNext:{[weak self] response in
+
+                            self?.thumbnail.image = response.image
+                        })
+                        .disposed(by: disposeBag)
+                }else{
+                    pipeline.rx.loadImage(with: URL(string: url)!)
+                        .subscribe(onSuccess: {[weak self] in
+                            guard let self = self else { return }
+                            self.thumbnail.image = $0.image
+                        })
+                        .disposed(by: disposeBag)
+                }
             }
             else {
                 thumbnail.image = UIImage.noimage

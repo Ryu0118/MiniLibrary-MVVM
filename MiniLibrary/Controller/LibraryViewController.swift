@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 import SnapKit
+import BarcodeScanner
+import KRProgressHUD
 
 
 enum LibrarySection {
@@ -219,15 +221,22 @@ extension LibraryViewController {
     
     private func configureUIMenu() -> UIMenu {
         var actions = [UIMenuElement]()
-        actions.append(UIAction(title: "バーコードを読み取る", state: .off , handler: { _ in
-            
+        actions.append(UIAction(title: "バーコードを読み取る", image: UIImage(systemName: "barcode"), state: .off , handler: {[weak self] _ in
+            guard let self = self else { return }
+            let barcodeScanner = BarcodeScannerViewController()
+            barcodeScanner.codeDelegate = self
+            barcodeScanner.errorDelegate = self
+            barcodeScanner.dismissalDelegate = self
+            barcodeScanner.headerViewController.titleLabel.text = "バーコードを読み取る"
+            self.navigationController?.pushViewController(barcodeScanner, animated: true)
         }))
-        actions.append(UIAction(title: "検索する", state: .off , handler: { _ in
+        actions.append(UIAction(title: "検索する", image: UIImage(systemName: "magnifyingglass"), state: .off , handler: { _ in
             
         }))
         return UIMenu(title: "", options: .displayInline, children: actions)
     }
     
+    //MARK: bind
     private func bind() {
         bellBarButtonItem.rx.tap
             .asDriver()
@@ -243,6 +252,33 @@ extension LibraryViewController {
                 let userListVC = UserListViewController(library: self.library)
                 self.navigationController?.pushViewController(userListVC, animated: true)
             }
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.metadataResponse
+            .drive {[weak self] image, bookinfo in
+                let alert = MiniLibraryAlertController(title: bookinfo.title, image: image)
+                let cancel = MiniLibraryAlertAction(message: "キャンセル", option: .cancel, handler: nil)
+                let add = MiniLibraryAlertAction(message: "追加", option: .normal, handler: {[weak self] in
+                    guard let self = self else { return }
+                    self.viewModel.inputs.addBookObserver.onNext((bookinfo, self.library))
+                    alert.dismiss(animated: true)
+                })
+                alert.addActions([cancel, add])
+                self?.present(alert, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.addBookResponse
+            .subscribe(onNext: {[weak self] response in
+                KRProgressHUD.dismiss()
+                if response.isEmpty {
+                    let alert = MiniLibraryAlertController(title: "追加しました", actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
+                    self?.present(alert, animated: true)
+                }else{
+                    let alert = MiniLibraryAlertController(title: "失敗しました", message: response, actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
+                    self?.present(alert, animated: true)
+                }
+            })
             .disposed(by: disposeBag)
     }
     
@@ -274,6 +310,32 @@ extension LibraryViewController {
     }
 
 
+    
+}
+
+//MARK: BarcodeScannerCodeDelegate
+extension LibraryViewController : BarcodeScannerCodeDelegate, BarcodeScannerDismissalDelegate, BarcodeScannerErrorDelegate {
+    
+    func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {
+        RakutenBooksAPI.getBookInformation(isbn: code)
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, bookinfo in
+                viewController.viewModel.inputs.bookinfoObserver.onNext(bookinfo)
+                controller.reset()
+            }, onError: {error in
+                controller.resetWithError(message: error.localizedDescription)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func scannerDidDismiss(_ controller: BarcodeScannerViewController) {
+        controller.dismiss(animated: true)
+    }
+    
+    func scanner(_ controller: BarcodeScannerViewController, didReceiveError error: Error) {
+        let alert = MiniLibraryAlertController(title: "エラーが発生しました", actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
+        present(alert, animated: true, completion: nil)
+    }
     
 }
 

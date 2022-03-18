@@ -10,7 +10,7 @@ import Foundation
 struct Library {
     let administrator: String
     let administrator_name: String
-    let books: [String:Any]
+    let book_count: Int
     let invite_code: String
     let library_name: String
     let library_code: String

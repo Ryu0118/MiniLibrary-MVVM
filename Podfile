@@ -9,6 +9,7 @@ target 'MiniLibrary' do
 
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'RxAlamofire'
   pod 'SnapKit'
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
@@ -17,6 +18,9 @@ target 'MiniLibrary' do
   pod 'RxDataSources'
   pod 'RxNuke'
   pod 'KRProgressHUD'
+  pod 'BarcodeScanner'
+  pod 'SwiftyJSON'
+
   target 'MiniLibraryTests' do
     inherit! :search_paths
     # Pods for testing

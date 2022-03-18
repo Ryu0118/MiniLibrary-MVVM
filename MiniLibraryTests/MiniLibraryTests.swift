@@ -6,9 +6,13 @@
 //
 
 import XCTest
+import RxSwift
+
 @testable import MiniLibrary
 
 class MiniLibraryTests: XCTestCase {
+    
+    private let disposeBag = DisposeBag()
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -24,6 +28,13 @@ class MiniLibraryTests: XCTestCase {
         // Any test you write for XCTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+        
+        RakutenBooksAPI.getBookInformation(isbn: "9784296106424")
+            .subscribe( onError: { error in
+                XCTFail(error.localizedDescription)
+            })
+            .disposed(by: disposeBag)
+        
     }
 
     func testPerformanceExample() throws {

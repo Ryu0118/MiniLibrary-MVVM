@@ -36,20 +36,29 @@ struct BookInfo {
     var imageURL: String? {
         return metadata["image_url"]
     }
-    var name: String {
-        return metadata["name"] ?? ""
+    var lowResImageURL: String? {
+        return metadata["small_image_url"]
+    }
+    var title: String {
+        return metadata["title"] ?? ""
     }
     var book_identifier: String {
         return metadata["identifier"] ?? ""
     }
-    var publish_date: String? {
-        return metadata["publish_date"]
+    var publication_date: String? {
+        return metadata["publication_date"]
     }
     var author: String? {
         return metadata["author"]
     }
     var owner: String {
         return metadata["owner"] ?? ""
+    }
+    var owner_uid: String {
+        return metadata["owner_uid"] ?? ""
+    }
+    var caption: String? {
+        return metadata["caption"]
     }
     
 }

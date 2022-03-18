@@ -16,7 +16,7 @@ class UserListViewController : UIViewController {
     let library: Library
     
     var rightBarButton: UIBarButtonItem!
-    var isAdministrator = false
+    //var isAdministrator = false
     
     var tableView: UITableView!
     var inviteButton: RegisterButton! {
@@ -70,6 +70,35 @@ extension UserListViewController {
                 self.present(alert, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
+        
+        rightBarButton.rx.tap.asDriver()
+            .drive {[weak self] _ in
+                guard let self = self else { return }
+                
+                let alert = MiniLibraryAlertController(title: "警告", message: "本当に退会しますか？", textFieldConfiguration: nil)
+                let cancel = MiniLibraryAlertAction(message: "キャンセル", option: .cancel, handler: nil)
+                let yes = MiniLibraryAlertAction(message: "はい", option: .normal, handler: {
+                    alert.dismiss(animated: true, completion: {
+                        self.viewModel.exitLibraryObserver.onNext(self.library.library_code)
+                    })
+                })
+                alert.addActions([cancel, yes])
+                
+                self.present(alert, animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.exitLibraryResponse
+            .withUnretained(self)
+            .subscribe(onNext: { controller, response in
+                if !response.isEmpty {
+                    let alert = MiniLibraryAlertController(title: "エラー", message: response, actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
+                    controller.present(alert, animated: true, completion: nil)
+                }else{
+                    controller.navigationController?.popToRootViewController(animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     private func setupInviteButton() {
@@ -108,12 +137,9 @@ extension UserListViewController {
             navigationBar.barTintColor = .white
             
             navigationItem.title = ""
-            
-            if let uid = Auth.auth().currentUser?.uid, library.administrator == uid {
-                rightBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil)
-                navigationItem.rightBarButtonItem = rightBarButton
-                isAdministrator = true
-            }
+            rightBarButton = UIBarButtonItem(title: "退会", style: .plain, target: nil, action: nil)
+            navigationItem.rightBarButtonItem = rightBarButton
+
         }
     }
     

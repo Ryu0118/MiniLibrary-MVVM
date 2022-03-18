@@ -81,18 +81,101 @@ class FirebaseUtil: RequireLogin {
         }
     }
     
-    static func addDocument(_ collection: String, data: [String:Any]) -> Observable<String> {
+    static func addDocument(_ collection: String, documentID: String? = nil, data: [String:Any]) -> Observable<String> {
         Observable<String>.create { observer -> Disposable in
-            db.collection(collection).addDocument(data: data) { err in
-                if let error = err {
-                    observer.onError(error.localizedDescription)
-                }else{
-                    observer.onNext("")
-                    observer.onCompleted()
+            if let documentID = documentID {
+                db.collection(collection).document(documentID).setData(data) { err in
+                    if let error = err {
+                        observer.onError(error.localizedDescription)
+                    }else{
+                        observer.onNext("")
+                        observer.onCompleted()
+                    }
+                }
+                return Disposables.create()
+            }else{
+                db.collection(collection).addDocument(data: data) { err in
+                    if let error = err {
+                        observer.onError(error.localizedDescription)
+                    }else{
+                        observer.onNext("")
+                        observer.onCompleted()
+                    }
+                }
+                return Disposables.create()
+            }
+        }
+    }
+
+    
+    static func addBook(libraryCode: String, bookinfo: BookInfo) -> Observable<String> {
+        
+        let rentinfo = [bookinfo.rent_info]
+        let books = [bookinfo.book_identifier]
+        let metadata = [bookinfo.metadata]
+        
+        let data: [String:Any] = [
+            "rent_info" : rentinfo,
+            "books" : books,
+            "books_data" : metadata
+        ]
+        
+        return Observable.combineLatest(getDocument("books", documentID: libraryCode), findDocuments("library", key: "library_code", isEqualTo: libraryCode))
+            .flatMap { documentSnapshot, querySnapshot -> Observable<String> in
+                if let snapshot = documentSnapshot?.data(),
+                   var gotRentInfo = snapshot["rent_info"] as? [[String:Any]],
+                   var gotBooks = snapshot["books"] as? [String],
+                   var gotBooksData = snapshot["books_data"] as? [[String:String]],
+                   let docID = querySnapshot.documents.first?.documentID,
+                   var book_count = querySnapshot.documents.first?.data()["book_count"] as? Int
+                {
+                    if gotBooksData.contains(where: { element -> Bool in
+                        return element.contains(where: { key, value -> Bool in
+                            key == "image_url" && value == bookinfo.imageURL
+                        })
+                    }) {
+                        return Observable<String>.just("既に追加しています")
+                    }
+                    book_count += 1
+                    gotRentInfo.append(contentsOf: rentinfo)
+                    gotBooks.append(contentsOf: books)
+                    gotBooksData.append(contentsOf: metadata)
+                    
+                    let updateData: [String : Any] = [
+                        "rent_info" : gotRentInfo,
+                        "books" : gotBooks,
+                        "books_data" : gotBooksData
+                    ]
+                
+                    return Observable.combineLatest(updateDocument("books", documentID: libraryCode, updateData: updateData), updateDocument("library", documentID: docID, updateData: ["book_count" : book_count]))
+                        .flatMap { books, library -> Observable<String> in
+                            if books == library {
+                                return Observable<String>.just("")
+                            }
+                            else {
+                                return Observable<String>.just(books.isEmpty ? library : books)
+                            }
+                        }
+                }
+                else{
+                    if let document = querySnapshot.documents.first,
+                       var book_count = document.data()["book_count"] as? Int {
+                        book_count += 1
+                        return Observable.combineLatest(addDocument("books", documentID: libraryCode, data: data), updateDocument("library", documentID: document.documentID, updateData: ["book_count" : book_count]))
+                            .flatMap { addDoc, updateDoc -> Observable<String> in
+                                if addDoc == updateDoc {
+                                    return Observable<String>.just("")
+                                }
+                                else {
+                                    return Observable<String>.just(addDoc.isEmpty ? updateDoc : addDoc)
+                                }
+                            }
+                    }else{
+                        return addDocument("books", documentID: libraryCode, data: data)
+                    }
                 }
             }
-            return Disposables.create()
-        }
+        
     }
     
     static func addLibrary(libraryName: String, administrator: String) -> Observable<String> {
@@ -105,7 +188,7 @@ class FirebaseUtil: RequireLogin {
                 "users_data" : [uid:FirebaseUtil.colorCode ?? "8ac6d1"],
                 "users" : [uid],
                 "users_name" : [administrator],
-                "books" : [:],
+                "book_count" : 0,
                 "invite_code" : createInviteCode(),
             ])
         }
@@ -117,15 +200,77 @@ class FirebaseUtil: RequireLogin {
         }
     }
     
-    static func updateDocument(_ collection: String, document:String, updateData: [String:Any]) -> Observable<String> {
+    static func exitLibrary(libraryCode: String) -> Observable<String> {
+        return findDocuments("library", key: "library_code", isEqualTo: libraryCode)
+            .flatMap { snapshot -> Observable<String> in
+
+                if let uid = Auth.auth().currentUser?.uid,
+                   let docID = snapshot.documents.first?.documentID,
+                   let data = snapshot.documents.first?.data(),
+                   var users = data["users"] as? [String],
+                   var users_name = data["users_name"] as? [String],
+                   var users_data = data["users_data"] as? [String:String],
+                   let firstIndex = users.firstIndex(of: uid) {
+                
+                    users.remove(at: firstIndex)
+                    users_name.remove(at: firstIndex)
+                    users_data.removeValue(forKey: uid)
+                    
+                    let updateData: [String:Any] = [
+                        "users" : users,
+                        "users_name" : users_name,
+                        "users_data" : users_data
+                    ]
+                    
+                    return updateDocument("library", documentID: docID, updateData: updateData)
+                    
+                }
+                else {
+                    return Observable<String>.just("An error has occured")
+                }
+            }
+    }
+    
+    static func updateDocument(_ collection: String, documentID:String, updateData: [String:Any]) -> Observable<String> {
         return Observable<String>.create { observer -> Disposable in
-            db.collection(collection).document(document).updateData(updateData) {error in
+            db.collection(collection).document(documentID).updateData(updateData) {error in
                 if let error = error {
                     observer.onNext(error.localizedDescription)
                 }else{
                     observer.onNext("")
                     observer.onCompleted()
                 }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    static func findDocumentIDs(_ collection: String, key: String, arrayContains: Any) -> Observable<[String]> {
+        
+        return findDocuments(collection, key: key, arrayContains: arrayContains)
+            .flatMap { snapshot -> Observable<[String]> in
+                let documents = snapshot.documents.map { $0.documentID }
+                return Observable<[String]>.just(documents)
+            }
+        
+    }
+    
+    static func findDocumentIDs(_ collection: String, key: String, isEqualTo: Any) -> Observable<[String]> {
+        
+        return findDocuments(collection, key: key, isEqualTo: isEqualTo)
+            .flatMap { snapshot -> Observable<[String]> in
+                let documents = snapshot.documents.map { $0.documentID }
+                return Observable<[String]>.just(documents)
+            }
+        
+    }
+    
+    static func getDocument(_ collection: String, documentID: String) -> Observable<DocumentSnapshot?> {
+        return Observable<DocumentSnapshot?>.create { observer -> Disposable in
+            let docRef = db.collection(collection).document(documentID)
+            
+            docRef.getDocument { document, error in
+                observer.onNext(document)
             }
             return Disposables.create()
         }
@@ -218,7 +363,7 @@ class FirebaseUtil: RequireLogin {
                             
                             if let administrator = data["administrator"] as? String,
                                let administrator_name = data["administrator_name"] as? String,
-                               let books = data["books"] as? [String:Any],
+                               let book_count = data["book_count"] as? Int,
                                let invite_code = data["invite_code"] as? String,
                                let library_name = data["library_name"] as? String,
                                let library_code = data["library_code"] as? String,
@@ -226,7 +371,16 @@ class FirebaseUtil: RequireLogin {
                                let users_data = data["users_data"] as? [String:String],
                                let users_name = data["users_name"] as? [String] {
                                 
-                                return Library(administrator: administrator, administrator_name: administrator_name, books: books, invite_code: invite_code, library_name: library_name, library_code: library_code, users: users, users_data: users_data, users_name: users_name)
+                                return Library(administrator: administrator,
+                                               administrator_name: administrator_name,
+                                               book_count: book_count,
+                                               invite_code: invite_code,
+                                               library_name: library_name,
+                                               library_code: library_code,
+                                               users: users,
+                                               users_data: users_data,
+                                               users_name: users_name
+                                )
                                 
                             }else{
                                 return nil
@@ -243,7 +397,7 @@ class FirebaseUtil: RequireLogin {
                 if let data = snapshot.documents.first?.data(),
                    let administrator = data["administrator"] as? String,
                    let administrator_name = data["administrator_name"] as? String,
-                   let books = data["books"] as? [String:Any],
+                   let book_count = data["book_count"] as? Int,
                    let invite_code = data["invite_code"] as? String,
                    let library_name = data["library_name"] as? String,
                    let library_code = data["library_code"] as? String,
@@ -254,7 +408,7 @@ class FirebaseUtil: RequireLogin {
                     return Observable<Library>.just(
                         Library(administrator: administrator,
                                 administrator_name: administrator_name,
-                                books: books,
+                                book_count: book_count,
                                 invite_code: invite_code,
                                 library_name: library_name,
                                 library_code: library_code,
@@ -275,7 +429,7 @@ class FirebaseUtil: RequireLogin {
         guard let uid = user?.uid else {
             return Observable<[Library]>.just([])
         }
-        return findDocuments("library", key: "users.\(uid)", isEqualTo: FirebaseUtil.colorCode ?? "8ac6d1")
+        return findDocuments("library", key: "users", arrayContains: uid)
             .flatMap { snapshot -> Observable<[Library]> in
                 
                 return Observable<[Library]>
@@ -286,7 +440,7 @@ class FirebaseUtil: RequireLogin {
                             
                             if let administrator = data["administrator"] as? String,
                                let administrator_name = data["administrator_name"] as? String,
-                               let books = data["books"] as? [String:Any],
+                               let book_count = data["book_count"] as? Int,
                                let invite_code = data["invite_code"] as? String,
                                let library_name = data["library_name"] as? String,
                                let library_code = data["library_code"] as? String,
@@ -294,7 +448,16 @@ class FirebaseUtil: RequireLogin {
                                let users_data = data["users_data"] as? [String:String],
                                let users_name = data["users_name"] as? [String] {
                                 
-                                return Library(administrator: administrator, administrator_name: administrator_name, books: books, invite_code: invite_code, library_name: library_name, library_code: library_code, users: users, users_data: users_data, users_name: users_name)
+                                return Library(administrator: administrator,
+                                               administrator_name: administrator_name,
+                                               book_count: book_count,
+                                               invite_code: invite_code,
+                                               library_name: library_name,
+                                               library_code: library_code,
+                                               users: users,
+                                               users_data: users_data,
+                                               users_name: users_name
+                                )
                                 
                             }else{
                                 return nil
@@ -329,7 +492,7 @@ class FirebaseUtil: RequireLogin {
                         users.append(uid)
                         users_name.append(currentUserName)
                         
-                        return updateDocument("library", document: docID, updateData: [
+                        return updateDocument("library", documentID: docID, updateData: [
                             "users" : users,
                             "users_data" : users_data,
                             "users_name" : users_name
