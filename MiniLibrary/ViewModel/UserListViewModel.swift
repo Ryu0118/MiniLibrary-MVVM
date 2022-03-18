@@ -14,7 +14,7 @@ protocol UserListViewModelInputs: AnyObject {
 }
 
 protocol UserListViewModelOutputs: AnyObject {
-    var usersDataObserver: PublishSubject<[(String, String)]> { get }
+    var usersDataObserver: PublishSubject<[UserList]> { get }
 }
 
 protocol UserListViewModelType: AnyObject {
@@ -35,7 +35,7 @@ class UserListViewModel: UserListViewModelType, UserListViewModelInputs, UserLis
         return exitLibrarySubject.asObserver()
     }
     //outputs
-    var usersDataObserver = PublishSubject<[(String, String)]>()
+    var usersDataObserver = PublishSubject<[UserList]>()
     var exitLibraryResponse = PublishRelay<String>()
     
     private let disposeBag = DisposeBag()
@@ -54,8 +54,8 @@ class UserListViewModel: UserListViewModelType, UserListViewModelInputs, UserLis
             .flatMapLatest { code in
                 return FirebaseUtil.addLibraryListener(libraryCode: code)
             }
-            .flatMap { library in
-                return Observable<[(String, String)]>.just(library.usersNameAndColorCode)
+            .flatMap { library -> Observable<[UserList]> in
+                return Observable<[UserList]>.just(library.userLists)
             }
             .bind(to: usersDataObserver)
             .disposed(by: disposeBag)

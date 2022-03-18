@@ -55,9 +55,9 @@ extension UserListViewController {
         viewModel.inputs.libraryCodeObserver.onNext(library.library_code)
         
         viewModel.outputs.usersDataObserver
-            .asDriver(onErrorJustReturn: library.usersNameAndColorCode)
-            .drive(tableView.rx.items(cellIdentifier: MemberCell.identifier, cellType: MemberCell.self)) { indexPath, usersData, cell in
-                cell.setup(userData: usersData, bookOwnedCount: 5)
+            .asDriver(onErrorJustReturn: library.userLists)
+            .drive(tableView.rx.items(cellIdentifier: MemberCell.identifier, cellType: MemberCell.self)) { indexPath, userList, cell in
+                cell.setup(userList: userList)
                 cell.selectionStyle = .none
             }
             .disposed(by: disposeBag)

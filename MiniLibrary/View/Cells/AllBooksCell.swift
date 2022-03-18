@@ -18,11 +18,14 @@ class AllBooksCell : UICollectionViewCell {
     
     var bookinfo: BookInfo! {
         didSet {
-            pairView = PairView(first: UIImageView(), second: MiniLibraryLabel(size: 14))
+
+            subviews.forEach { $0.removeFromSuperview() }
+            pairView = PairView(first: UIImageView(), second: MiniLibraryLabel(size: 10), axis: .vertical, spacing: 3)
             
             titleLabel.text = bookinfo.title
             titleLabel.lineBreakMode = .byTruncatingTail
-            titleLabel.numberOfLines = 3
+            titleLabel.numberOfLines = 0
+            titleLabel.sizeToFit()
             
             if let url = bookinfo.imageURL {
                 
@@ -55,7 +58,7 @@ class AllBooksCell : UICollectionViewCell {
     
     var pairView: PairView! {
         didSet {
-            pairView.stack.distribution = .equalSpacing
+            //pairView.stack.distribution = .
         }
     }
     
@@ -80,8 +83,17 @@ class AllBooksCell : UICollectionViewCell {
     func update(bookinfo: BookInfo) {
         self.bookinfo = bookinfo
         addSubview(pairView)
+        
         pairView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(ConstraintInsets(top: 4, left: 2, bottom: 4, right: 2))
+            $0.top.left.equalToSuperview().offset(4)
+            $0.right.equalTo(-4)
+            $0.height.equalTo(self.snp.height).multipliedBy(0.95)
+            $0.height.greaterThanOrEqualTo(self.snp.height).multipliedBy(0.69).offset(32)
+        }
+        
+        thumbnail.snp.makeConstraints {
+            $0.height.equalToSuperview().multipliedBy(0.69)
+            $0.width.equalToSuperview().multipliedBy(0.92)
         }
     }
     

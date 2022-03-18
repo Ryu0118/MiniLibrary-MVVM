@@ -45,10 +45,12 @@ class PairView : UIView {
         }
     }
     
-    init(first: UIView, second: UIView, axis: NSLayoutConstraint.Axis = .horizontal, spacing: CGFloat = 18) {
+    init(first: UIView, second: UIView, axis: NSLayoutConstraint.Axis = .horizontal, spacing: CGFloat = 18, constraintsHandler: (() -> ())? = nil) {
         firstView = first
         secondView = second
-        stack = UIStackView(arrangedSubviews: [first, second])
+        stack = UIStackView()
+        stack.removeAllArrangedSubviews()
+        stack.addArrangedSubviews([first, second])
         stack.axis = axis
         stack.spacing = spacing
         stack.distribution = .fillProportionally
@@ -59,6 +61,7 @@ class PairView : UIView {
         stack.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+        constraintsHandler?()
     }
     
     required init?(coder: NSCoder) {

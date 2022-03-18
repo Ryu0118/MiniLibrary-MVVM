@@ -23,6 +23,10 @@
 		232D20EE27E378AF00B45BAD /* PairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20ED27E378AF00B45BAD /* PairView.swift */; };
 		232D20F027E41D4D00B45BAD /* RakutenBooksAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20EF27E41D4C00B45BAD /* RakutenBooksAPI.swift */; };
 		232D20F227E423FB00B45BAD /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20F127E423FB00B45BAD /* Array.swift */; };
+		232D20F427E497C700B45BAD /* UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20F327E497C600B45BAD /* UserList.swift */; };
+		232D20F627E4A81100B45BAD /* LibraryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20F527E4A81000B45BAD /* LibraryHeaderView.swift */; };
+		232D20F827E4CEED00B45BAD /* BookDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20F727E4CEEC00B45BAD /* BookDetailView.swift */; };
+		232D20FA27E4E26D00B45BAD /* GoogleBooksAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232D20F927E4E26D00B45BAD /* GoogleBooksAPI.swift */; };
 		237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */; };
 		237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C1A27E0C0AB00C1731C /* Registration.swift */; };
 		237E7C1D27E0CB5F00C1731C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */; };
@@ -94,6 +98,10 @@
 		232D20ED27E378AF00B45BAD /* PairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairView.swift; sourceTree = "<group>"; };
 		232D20EF27E41D4C00B45BAD /* RakutenBooksAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RakutenBooksAPI.swift; sourceTree = "<group>"; };
 		232D20F127E423FB00B45BAD /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		232D20F327E497C600B45BAD /* UserList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserList.swift; sourceTree = "<group>"; };
+		232D20F527E4A81000B45BAD /* LibraryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryHeaderView.swift; sourceTree = "<group>"; };
+		232D20F727E4CEEC00B45BAD /* BookDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailView.swift; sourceTree = "<group>"; };
+		232D20F927E4E26D00B45BAD /* GoogleBooksAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksAPI.swift; sourceTree = "<group>"; };
 		237E7C1827E0B35A00C1731C /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		237E7C1A27E0C0AB00C1731C /* Registration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registration.swift; sourceTree = "<group>"; };
 		237E7C1C27E0CB5E00C1731C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -248,6 +256,8 @@
 				237E7C2827E1BDB400C1731C /* CircleIconView.swift */,
 				237E7C2A27E1C14600C1731C /* UserListView.swift */,
 				232D20ED27E378AF00B45BAD /* PairView.swift */,
+				232D20F527E4A81000B45BAD /* LibraryHeaderView.swift */,
+				232D20F727E4CEEC00B45BAD /* BookDetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -274,6 +284,8 @@
 				237E7C2E27E1CB5E00C1731C /* Library.swift */,
 				232D20E727E36F3500B45BAD /* BookInfo.swift */,
 				232D20EF27E41D4C00B45BAD /* RakutenBooksAPI.swift */,
+				232D20F327E497C600B45BAD /* UserList.swift */,
+				232D20F927E4E26D00B45BAD /* GoogleBooksAPI.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -597,6 +609,7 @@
 				232D20D927E3101B00B45BAD /* MemberCell.swift in Sources */,
 				232D20D527E2EC3600B45BAD /* GroupedButtonView.swift in Sources */,
 				232D20D727E30B6D00B45BAD /* UserListViewController.swift in Sources */,
+				232D20FA27E4E26D00B45BAD /* GoogleBooksAPI.swift in Sources */,
 				23D7317627E041BC001C7BC2 /* LibraryListViewController.swift in Sources */,
 				23D731C127E0836E001C7BC2 /* Regex.swift in Sources */,
 				232D20D227E2E44C00B45BAD /* LibraryViewController.swift in Sources */,
@@ -610,6 +623,7 @@
 				232D20F227E423FB00B45BAD /* Array.swift in Sources */,
 				23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */,
 				237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */,
+				232D20F827E4CEED00B45BAD /* BookDetailView.swift in Sources */,
 				232D20DF27E3322E00B45BAD /* RentingCell.swift in Sources */,
 				232D20DD27E3295000B45BAD /* LibraryViewModel.swift in Sources */,
 				23D731B327E05730001C7BC2 /* AuthTextField.swift in Sources */,
@@ -623,9 +637,11 @@
 				237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */,
 				237E7C2B27E1C14600C1731C /* UserListView.swift in Sources */,
 				237E7C2D27E1CA7900C1731C /* LibraryListViewModel.swift in Sources */,
+				232D20F627E4A81100B45BAD /* LibraryHeaderView.swift in Sources */,
 				232D20E127E3324B00B45BAD /* AllBooksCell.swift in Sources */,
 				23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */,
 				237E7C2527E1B60200C1731C /* FirebaseUtil.swift in Sources */,
+				232D20F427E497C700B45BAD /* UserList.swift in Sources */,
 				23D731BC27E06C65001C7BC2 /* UIStackView+.swift in Sources */,
 				237E7C3327E2197400C1731C /* MiniLibraryAlertController.swift in Sources */,
 				237E7C2F27E1CB5E00C1731C /* Library.swift in Sources */,

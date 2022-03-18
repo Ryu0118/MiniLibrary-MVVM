@@ -17,15 +17,22 @@ struct Library {
     let users: [String]
     let users_data: [String:String]
     let users_name: [String]
+    let users_books: [String:[String]]//[UUIDString:[BookIdentifier]]
     
-    var usersNameAndColorCode:[(String,String)] {
-        var usersData = [(String, String)]()
+    var userLists: [UserList] {
+        var list = [UserList]()
         self.users.enumerated().forEach { i, uid in
-            let user_name = self.users_name[i]
-            if let color_code = self.users_data[uid] {
-                usersData.append((user_name, color_code))
+            if let name = getNameFromUID(uid),
+               let colorCode = self.users_data[uid] {
+                let bookCount = users_books[uid]?.count ?? 0
+                list.append(UserList(userName: name, uid: uid, colorCode: colorCode, bookCount: bookCount))
             }
         }
-        return usersData
+        return list
     }
+    
+    func getNameFromUID(_ uid: String) -> String? {
+        return users_name[safe: users.firstIndex(of: uid) ?? 0]
+    }
+    
 }

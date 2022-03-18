@@ -13,18 +13,17 @@ class MemberCell: UITableViewCell {
     static let identifier = "MemberCell"
     static let cellHeight = CGFloat(59)
     
-    var userData: (String, String)!
-    var bookOwnedCount = 0
+    var userList: UserList!
     
     var iconView: CircleIconView!
     var nameLabel: MiniLibraryLabel! {
         didSet {
-            nameLabel.text = userData.0
+            nameLabel.text = userList.userName
         }
     }
     var bookOwnedLabel: MiniLibraryLabel! {
         didSet {
-            bookOwnedLabel.text = "本所有数: \(bookOwnedCount)"
+            bookOwnedLabel.text = "本所有数: \(userList.bookCount)"
             bookOwnedLabel.textAlignment = .right
             bookOwnedLabel.textColor = .grayTextColor
         }
@@ -45,13 +44,12 @@ class MemberCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(userData: (String, String), bookOwnedCount: Int) {
-        self.userData = userData
-        self.bookOwnedCount = bookOwnedCount
+    func setup(userList: UserList) {
+        self.userList = userList
         
         hstack.removeAllArrangedSubviews()
         
-        iconView = CircleIconView(initialName: String(userData.0.prefix(1)), colorCode: userData.1)
+        iconView = CircleIconView(initialName: String(userList.userName.prefix(1)), colorCode: userList.colorCode)
         nameLabel = MiniLibraryLabel(size: 14)
         bookOwnedLabel = MiniLibraryLabel(size: 12)
         

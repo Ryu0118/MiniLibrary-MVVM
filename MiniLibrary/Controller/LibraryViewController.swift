@@ -38,6 +38,19 @@ class LibraryViewController : UIViewController {
     private let viewModel = LibraryViewModel()
     private let disposeBag = DisposeBag()
     
+    var sectionCount = 1
+    
+    var bookinfo = [BookInfo]() {
+        didSet {
+            if bookinfo.filter({ $0.isRented }).count > 0 {
+                sectionCount = 2
+            }
+            else {
+                sectionCount = 1
+            }
+        }
+    }
+    
     private lazy var dataSource = RxCollectionViewSectionedReloadDataSource<LibrarySectionModel>(configureCell: configureCell, configureSupplementaryView: titleForHeaderInSection)
     
     private lazy var configureCell: RxCollectionViewSectionedReloadDataSource<LibrarySectionModel>.ConfigureCell = {[weak self] _, tableView, indexPath, item in
@@ -50,7 +63,7 @@ class LibraryViewController : UIViewController {
         }
     }
     private lazy var titleForHeaderInSection: RxCollectionViewSectionedReloadDataSource<LibrarySectionModel>.ConfigureSupplementaryView = { [weak self] (dataSource, collectionView, kind, indexPath) in
-        guard let self = self else { return UICollectionReusableView() }
+        guard let self = self else { return LibraryHeaderView() }
         return self.headerCell(indexPath: indexPath, kind: kind)
     }
     
@@ -66,8 +79,8 @@ class LibraryViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationbar()
-        bind()
         setupCollectionView()
+        bind()
         view.backgroundColor = .white
     }
     
@@ -95,10 +108,13 @@ extension LibraryViewController {
         
     }
     
+    //MARK: UICollectionViewLayout
     private func createLayout() -> UICollectionViewLayout {
         let sectionProvider = { (sectionIndex: Int,
-            layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
-            guard let sectionKind = SectionLayoutKind(rawValue: sectionIndex) else { fatalError() }
+                                 layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let sectionKind = SectionLayoutKind(rawValue: self.sectionCount == 2 ? sectionIndex : 1) else { fatalError() }
+            
+            print(sectionKind)
             
             switch sectionKind {
             case .renting:
@@ -129,27 +145,31 @@ extension LibraryViewController {
                 let lineCount = itemCount - 1
                 let itemSpacing = CGFloat(8)
                 let itemLength = (layoutEnvironment.container.effectiveContentSize.width - (itemSpacing * CGFloat(lineCount))) * 0.75 / CGFloat(itemCount)
-
-                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(itemLength),heightDimension: .absolute(itemLength * 28/13)))
-
+                let height: CGFloat = 20 + itemLength * 28/13
+                
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(itemLength),heightDimension: .absolute(height)))
+                
                 let items = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),heightDimension: .fractionalHeight(1.0)),subitem: item,count: itemCount)
                 items.interItemSpacing = .fixed(itemSpacing)
                 
-                let groups = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),heightDimension: .absolute(itemLength)),subitems: [items])
-
+                let groups = NSCollectionLayoutGroup.vertical(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),heightDimension: .absolute(height)),subitems: [items])
+                
                 let section = NSCollectionLayoutSection(group: groups)
-                let leadingInset = (layoutEnvironment.container.effectiveContentSize.width - itemLength) / 2
-                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: leadingInset, bottom: 0, trailing: leadingInset)
-
+                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 0, trailing: 8)
+                
                 section.interGroupSpacing = itemSpacing
+                let sectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                               heightDimension: .estimated(44))
+                let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sectionHeaderSize, elementKind: "header", alignment: .top)
+                section.boundarySupplementaryItems = [sectionHeader]
                 return section
             }
-
+            
         }
         
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = 30
-
+        
         let layout = UICollectionViewCompositionalLayout(sectionProvider: sectionProvider, configuration: config)
         return layout
         
@@ -161,30 +181,21 @@ extension LibraryViewController {
         collectionView.backgroundColor = .appBackgroundColor
         collectionView.register(AllBooksCell.self, forCellWithReuseIdentifier: AllBooksCell.identifier)
         collectionView.register(RentingCell.self, forCellWithReuseIdentifier: RentingCell.identifier)
+        
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
-        collectionView.rx.itemSelected
-            .map { [weak self] indexpath -> LibraryItem? in
-                return self?.dataSource[indexpath]
-            }
-            .subscribe { [weak self] item in
-                guard let item = item.element, let item = item else { return }
-                
-                switch item {
-                case .renting(let bookinfo):
-                    print(bookinfo)
-                    break
-                case .allbooks(let bookinfo):
-                    print(bookinfo)
-                    break
-                }
-            }
-            .disposed(by: disposeBag)
         
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints {
             $0.top.left.right.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
+        
+        //bind collectionView dataSource
+        viewModel.outputs.items
+            .bind(to: collectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        viewModel.updateItems(libraryCode: library.library_code)
     }
     
     private func setupNavigationbar() {
@@ -241,9 +252,9 @@ extension LibraryViewController {
         bellBarButtonItem.rx.tap
             .asDriver()
             .drive { _ in
-            print("leftButtonPressed")
-        }
-        .disposed(by: disposeBag)
+                print("leftButtonPressed")
+            }
+            .disposed(by: disposeBag)
         
         profileBarButtonItem.rx.tap
             .asDriver()
@@ -280,10 +291,52 @@ extension LibraryViewController {
                 }
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.bookinfo
+            .withUnretained(self)
+            .subscribe(onNext: { strongSelf,info in
+                strongSelf.bookinfo = info
+            })
+            .disposed(by: disposeBag)
+        
+        collectionView.rx.itemSelected
+            .map { [weak self] indexpath -> LibraryItem? in
+                return self?.dataSource[indexpath]
+            }
+            .subscribe { [weak self] item in
+                guard let item = item.element, let item = item else { return }
+                
+                switch item {
+                case .renting(let bookinfo):
+                    break
+                case .allbooks(let bookinfo):
+                    print(bookinfo)
+                    
+                    let detailView = BookDetailView(bookinfo: bookinfo)
+                    
+                    var captionView: MiniLibraryLabel? = MiniLibraryLabel(size: 12)
+                    captionView?.textColor = .grayTextColor
+                    captionView?.text = bookinfo.caption
+                    captionView?.sizeToFit()
+                    captionView?.numberOfLines = 0
+                    if let caption = bookinfo.caption, caption.isEmpty { captionView = nil }
+                    
+                    let alert = MiniLibraryAlertController(customViews: [detailView, captionView].compactMap { $0 }, multipledBy: 0.9)
+                    let cancel = MiniLibraryAlertAction(message: "キャンセル", option: .cancel, handler: nil)
+                    let submit = MiniLibraryAlertAction(message: "貸出申請", option: .normal, handler: {
+                        
+                    })
+                    alert.addActions([cancel, submit])
+                    self?.present(alert, animated: true)
+                    
+                    break
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     private func renting(indexPath: IndexPath, bookinfo: BookInfo) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LibraryListCell", for: indexPath) as? RentingCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RentingCell.identifier, for: indexPath) as? RentingCell {
             cell.update(bookinfo: bookinfo)
             return cell
         }
@@ -291,7 +344,7 @@ extension LibraryViewController {
     }
     
     private func allbooks(indexPath: IndexPath, bookinfo: BookInfo) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LibraryListCell", for: indexPath) as? AllBooksCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AllBooksCell.identifier, for: indexPath) as? AllBooksCell {
             cell.update(bookinfo: bookinfo)
             return cell
         }
@@ -299,17 +352,14 @@ extension LibraryViewController {
     }
     
     private func headerCell(indexPath: IndexPath, kind: String) -> UICollectionReusableView {
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: indexPath)
-        let titleLabel = MiniLibraryLabel(size: 25)
-        titleLabel.text = indexPath.section == 0 ? "貸出中の本" : "全ての本"
-        headerView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints {
-            $0.left.centerY.equalToSuperview()
-        }
+        collectionView.register(LibraryHeaderView.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: LibraryHeaderView.identifier)
+        
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: LibraryHeaderView.identifier, for: indexPath) as! LibraryHeaderView
+        headerView.setup(indexPath: indexPath)
         return headerView
     }
-
-
+    
+    
     
 }
 
@@ -317,7 +367,10 @@ extension LibraryViewController {
 extension LibraryViewController : BarcodeScannerCodeDelegate, BarcodeScannerDismissalDelegate, BarcodeScannerErrorDelegate {
     
     func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {
-        RakutenBooksAPI.getBookInformation(isbn: code)
+        GoogleBooksAPI.getBookInformation(isbn: code)
+            .catch {error -> Observable<BookInfo> in
+                return RakutenBooksAPI.getBookInformation(isbn: code)
+            }
             .withUnretained(self)
             .subscribe(onNext: { viewController, bookinfo in
                 viewController.viewModel.inputs.bookinfoObserver.onNext(bookinfo)

@@ -36,12 +36,14 @@ struct TextfieldConfiguration {
 
 class MiniLibraryAlertController : UIViewController {
     
-    let titleText: String?
+    var titleText: String?
     var bigMessage: String?
     var message: String?
     var image: UIImage?
-    let textfieldConfiguration: TextfieldConfiguration?
+    var textfieldConfiguration: TextfieldConfiguration?
+    var customViews: [UIView]?
     var actions: [MiniLibraryAlertAction]
+    var width_multipledBy: CGFloat
     
     var titleLabel: MiniLibraryLabel? {
         didSet {
@@ -113,13 +115,22 @@ class MiniLibraryAlertController : UIViewController {
         return view
     }()
     
-    init(title: String? = nil, image: UIImage? = nil, bigMessage: String? = nil, message: String? = nil, textFieldConfiguration: TextfieldConfiguration? = nil, actions: [MiniLibraryAlertAction] = []) {
+    init(title: String? = nil, image: UIImage? = nil, bigMessage: String? = nil, message: String? = nil, textFieldConfiguration: TextfieldConfiguration? = nil, multipledBy: CGFloat = 0.7, actions: [MiniLibraryAlertAction] = []) {
         self.titleText = title
         self.image = image
         self.bigMessage = bigMessage
         self.message = message
         self.textfieldConfiguration = textFieldConfiguration
+        self.width_multipledBy = multipledBy
         self.actions = actions
+        super.init(nibName: nil, bundle: nil)
+        setupViewController()
+    }
+    
+    init(customViews: [UIView], actions: [MiniLibraryAlertAction] = [], multipledBy: CGFloat = 0.7) {
+        self.customViews = customViews
+        self.actions = actions
+        self.width_multipledBy = multipledBy
         super.init(nibName: nil, bundle: nil)
         setupViewController()
     }
@@ -161,7 +172,7 @@ class MiniLibraryAlertController : UIViewController {
         
         alertView.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.7)
+            $0.width.equalToSuperview().multipliedBy(width_multipledBy)
             $0.height.lessThanOrEqualToSuperview().multipliedBy(0.85)
         }
     }
@@ -196,8 +207,8 @@ class MiniLibraryAlertController : UIViewController {
             leftButton = RegisterButton(frame: .zero)
             leftButton?.setTitle(actions[0].message, for: .normal)
         }
-        
-        vstack.addArrangedSubviews([imageView, titleLabel, bigMessageLabel, messageLabel, textField, hstack].compactMap { $0 })
+        if let customViews = customViews { vstack.addArrangedSubviews(customViews) }
+        vstack.addArrangedSubviews(([imageView, titleLabel, bigMessageLabel, messageLabel, textField, hstack]).compactMap { $0 })
         hstack.addArrangedSubviews([leftButton, rightButton].compactMap { $0 })
         
         alertView.addSubview(vstack)
@@ -327,7 +338,6 @@ class AlertAnimation: NSObject, UIViewControllerAnimatedTransitioning {
         UIView.animate(withDuration: 0.25, animations: {
             alert.baseView.alpha = 0
             alert.alertView.alpha = 0
-            alert.vstack.alpha = 0
             alert.alertView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
         }, completion: { _ in
             transitionContext.completeTransition(true)
