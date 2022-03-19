@@ -58,6 +58,7 @@ extension UserListViewController {
             .asDriver(onErrorJustReturn: library.userLists)
             .drive(tableView.rx.items(cellIdentifier: MemberCell.identifier, cellType: MemberCell.self)) { indexPath, userList, cell in
                 cell.setup(userList: userList)
+                cell.backgroundColor = .white
                 cell.selectionStyle = .none
             }
             .disposed(by: disposeBag)
@@ -114,6 +115,7 @@ extension UserListViewController {
         tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(MemberCell.self, forCellReuseIdentifier: MemberCell.identifier)
         tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
         view.addSubview(tableView)
         tableView.snp.makeConstraints {
             $0.top.left.right.equalTo(view.safeAreaLayoutGuide)

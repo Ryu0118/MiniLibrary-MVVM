@@ -9,7 +9,7 @@ import Foundation
 
 
 struct BookInfo {
-    let rent_info: [String:Any]
+    var rent_info: [String:Any]
     let metadata: [String:String]
     
     //rent_info
@@ -61,4 +61,10 @@ struct BookInfo {
         return metadata["caption"]
     }
     
+}
+
+extension BookInfo {
+    mutating func updateRentInfoValue(key: String, value: Any) {
+        rent_info.updateValue(value, forKey: key)
+    }
 }

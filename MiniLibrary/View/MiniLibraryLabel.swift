@@ -12,6 +12,7 @@ class MiniLibraryLabel : UILabel {
     init(size: CGFloat) {
         super.init(frame: .zero)
         self.font = .appFont(size: size)
+        self.textColor = .black
     }
     
     required init?(coder: NSCoder) {

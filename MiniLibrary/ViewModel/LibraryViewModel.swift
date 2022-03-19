@@ -14,6 +14,8 @@ import KRProgressHUD
 protocol LibraryViewModelInputs: AnyObject {
     var bookinfoObserver: AnyObserver<BookInfo> { get }
     var addBookObserver: AnyObserver<(BookInfo, Library)> { get }
+    var isbnObserver: AnyObserver<String> { get }
+    func sendRentApplication(bookinfo: BookInfo, libraryCode: String, senderUserList: UserList)
 }
 
 protocol LibraryViewModelOutputs: AnyObject {
@@ -21,6 +23,8 @@ protocol LibraryViewModelOutputs: AnyObject {
     var addBookResponse: Observable<String> { get }
     var items: BehaviorRelay<[LibrarySectionModel]> { get }
     var bookinfo: PublishSubject<[BookInfo]> { get }
+    var apiResult: PublishSubject<BookInfo> { get }
+    var rentApplicationResult: PublishSubject<String> { get }
 }
 
 protocol LibraryViewModelType: AnyObject {
@@ -45,6 +49,10 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
     var addBookObserver: AnyObserver<(BookInfo, Library)> {
         return addBookSubject.asObserver()
     }
+    private var isbnSubject = PublishSubject<String>()
+    var isbnObserver: AnyObserver<String> {
+        return isbnSubject.asObserver()
+    }
     
     
     //outputs
@@ -52,6 +60,8 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
     var addBookResponse: Observable<String>
     var items = BehaviorRelay<[LibrarySectionModel]>(value: [])
     var bookinfo = PublishSubject<[BookInfo]>()
+    var apiResult = PublishSubject<BookInfo>()
+    var rentApplicationResult = PublishSubject<String>()
     
     private let disposeBag = DisposeBag()
     
@@ -80,7 +90,24 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
                     
             }
             .asDriver(onErrorJustReturn: (UIImage.noimage, BookInfo(rent_info: [:], metadata: [:])))
+        
+        isbnSubject
+            .flatMap { code -> Observable<BookInfo> in
+                return RakutenBooksAPI.getBookInformation(isbn: code)
+                    .catch {_ in
+                        GoogleBooksAPI.getBookInformation(isbn: code)
+                    }
+            }
+            .bind(to: apiResult)
+            .disposed(by: disposeBag)
+        
             
+    }
+    
+    func sendRentApplication(bookinfo: BookInfo, libraryCode: String, senderUserList: UserList) {
+        FirebaseUtil.applyRentBook(bookinfo: bookinfo, libraryCode: libraryCode, userList: senderUserList)
+            .bind(to: outputs.rentApplicationResult)
+            .disposed(by: disposeBag)
     }
     
     func updateItems(libraryCode: String) {

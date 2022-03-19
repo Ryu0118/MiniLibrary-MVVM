@@ -198,10 +198,15 @@ class FirebaseUtil: RequireLogin {
     }
     
     static func addLibrary(libraryName: String, administrator: String) -> Observable<String> {
+        
         if let uid = Auth.auth().currentUser?.uid {
-            return addDocument("library", data: [
+            
+            let libraryCode = UUID().uuidString
+            
+            let addLibraryObserver =
+            addDocument("library", data: [
                 "library_name" : libraryName,
-                "library_code" : UUID().uuidString,
+                "library_code" : libraryCode,
                 "administrator" : uid,
                 "administrator_name" : administrator,
                 "users_data" : [uid:FirebaseUtil.colorCode ?? "8ac6d1"],
@@ -211,6 +216,21 @@ class FirebaseUtil: RequireLogin {
                 "users_books" : [:],
                 "invite_code" : createInviteCode(),
             ])
+            
+            let addNotificationObserver =
+            addDocument("notifications", documentID: libraryCode, data: [
+                "applyNotifications" : [:]
+            ])
+            
+            return Observable.combineLatest(addLibraryObserver, addNotificationObserver)
+                .flatMap { res0, res1 -> Observable<String> in
+                    if res0 == res1 {
+                        return Observable<String>.just(res0)
+                    }else{
+                        return Observable<String>.just(res0.isEmpty ? res1 : res0)
+                    }
+                }
+            
         }
         else {
             return Observable<String>.create {
@@ -220,30 +240,105 @@ class FirebaseUtil: RequireLogin {
         }
     }
     
-    static func exitLibrary(libraryCode: String) -> Observable<String> {
-        return findDocuments("library", key: "library_code", isEqualTo: libraryCode)
+    static func applyRentBook(bookinfo: BookInfo, libraryCode: String, userList: UserList) -> Observable<String> {
+        return getDocument("notifications", documentID: libraryCode)
             .flatMap { snapshot -> Observable<String> in
-
+                
+                guard let snapshot = snapshot,
+                      let data = snapshot.data() else {
+                    return Observable<String>.just("ドキュメントが見つかりませんでした")
+                }
+                guard let rentPeriod = bookinfo.rentPeriod else{
+                    return Observable<String>.just("貸出日数が設定されていません")
+                }
+                
+                let applyNotifications = data["applyNotifications"] as? [String : [[String : Any]]]
+                let ownerNotification = applyNotifications?[bookinfo.owner_uid]
+                let message: [String : Any] = [
+                    "from_uid" : userList.uid,
+                    "from_colorCode" : userList.colorCode,
+                    "from_name" : userList.userName,
+                    "to_uid" : bookinfo.owner_uid,
+                    "to" : bookinfo.owner,
+                    "rent_period" : rentPeriod,
+                    "date" : Timestamp(),
+                    "books_data" : bookinfo.metadata,
+                ]
+                if var ownerNotification = ownerNotification {
+                    ownerNotification.append(message)
+                    
+                    return updateDocument("notifications", documentID: libraryCode, updateData: [
+                        "applyNotifications" : [bookinfo.owner_uid : ownerNotification]
+                    ])
+                }
+                else{
+                    
+                    return updateDocument("notifications", documentID: libraryCode, updateData: [
+                        "applyNotifications" : [bookinfo.owner_uid : [message]]
+                    ])
+                }
+            }
+    }
+    
+    static func exitLibrary(libraryCode: String) -> Observable<String> {
+        
+        return Observable.combineLatest(findDocuments("library", key: "library_code", isEqualTo: libraryCode), getDocument("books", documentID: libraryCode))
+            .flatMap { snapshot, documentSnapshot -> Observable<String> in
+                
                 if let uid = Auth.auth().currentUser?.uid,
                    let docID = snapshot.documents.first?.documentID,
                    let data = snapshot.documents.first?.data(),
                    var users = data["users"] as? [String],
                    var users_name = data["users_name"] as? [String],
                    var users_data = data["users_data"] as? [String:String],
-                   let firstIndex = users.firstIndex(of: uid) {
-                
+                   var users_books = data["users_books"] as? [String:[String]],
+                   let firstIndex = users.firstIndex(of: uid),
+                   let books_field = documentSnapshot?.data(),
+                   var books = books_field["books"] as? [String],
+                   var books_data = books_field["books_data"] as? [[String:String]],
+                   var rent_info = books_field["rent_info"] as? [[String:Any]] {
+                    
                     users.remove(at: firstIndex)
                     users_name.remove(at: firstIndex)
                     users_data.removeValue(forKey: uid)
+                    users_books.removeValue(forKey: uid)
+                    
+                    var i = books_data.count - 1
+                    books_data = books_data.reversed().filter { book -> Bool in
+                        defer { i -= 1 }
+                        if uid == book["owner_uid"] {
+                            books.remove(at: i)
+                            rent_info.remove(at: i)
+                            return false
+                        }
+                        else {
+                            return true
+                        }
+                    }
                     
                     let updateData: [String:Any] = [
+                        "book_count" : books.count,
                         "users" : users,
                         "users_name" : users_name,
-                        "users_data" : users_data
+                        "users_data" : users_data,
+                        "users_books" : users_books
                     ]
                     
-                    return updateDocument("library", documentID: docID, updateData: updateData)
+                    let updateData_books: [String:Any] = [
+                        "books" : books,
+                        "books_data" : books_data,
+                        "rent_info" : rent_info
+                    ]
                     
+                    return Observable.combineLatest(updateDocument("library", documentID: docID, updateData: updateData), updateDocument("books", documentID: libraryCode, updateData: updateData_books))
+                        .flatMap { res0, res1 -> Observable<String> in
+                            if res0 == res1 {
+                                return Observable<String>.just(res0)
+                            }
+                            else {
+                                return Observable<String>.just(res0.isEmpty ? res1 : res0)
+                            }
+                        }
                 }
                 else {
                     return Observable<String>.just("An error has occured")
@@ -382,6 +477,43 @@ class FirebaseUtil: RequireLogin {
             return Disposables.create()
         }
         
+    }
+    
+    static func notificationListListener(libraryCode: String) -> Observable<[Notification]> {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return Observable<[Notification]>.just([])
+        }
+        return addSnapshotListener("notifications", documentID: libraryCode)
+            .flatMap { document -> Observable<[Notification]> in
+                    
+                guard let data = document.data(),
+                      let applyNotifications = data["applyNotifications"] as? [String : [[String : Any]]],
+                      let myNotifications = applyNotifications[uid] else {
+                          return Observable<[Notification]>.just([])
+                      }
+                
+                return Observable<[Notification]>.just(
+                    
+                    myNotifications.compactMap { info -> Notification? in
+                        if let books_data = info["books_data"] as? [String : String],
+                           let from_colorCode = info["from_colorCode"] as? String,
+                           let from_name = info["from_name"] as? String,
+                           let from_uid = info["from_uid"] as? String,
+                           let rent_period = info["rent_period"] as? Int,
+                           let date = info["date"] as? Timestamp,
+                           let to_name = info["to"] as? String,
+                           let to_uid = info["to_uid"] as? String {
+                            
+                            return Notification(from_colorCode: from_colorCode, from_name: from_name, from_uid: from_uid, to_name: to_name, to_uid: to_uid, rent_period: rent_period, date: date.dateValue(), books_data: books_data)
+                            
+                        }
+                        else {
+                            return nil
+                        }
+                    }.reversed()
+                )
+    
+            }
     }
     
     static func addBooksListener(libraryCode: String) -> Observable<[BookInfo]> {
@@ -585,6 +717,17 @@ class FirebaseUtil: RequireLogin {
         }
 
         return randomString
+    }
+    
+}
+
+extension Array {
+    
+    mutating func multipleDelete(at: [Int]) {
+        let sortedAt = at.sorted { $0 > $1 }
+        sortedAt.forEach { at in
+            self.remove(at: at)
+        }
     }
     
 }

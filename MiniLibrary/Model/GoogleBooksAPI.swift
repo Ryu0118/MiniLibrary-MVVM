@@ -24,17 +24,14 @@ final class GoogleBooksAPI {
                 
                 let json = JSON(jsonObject)
                 print(json)
-                print("最初に呼ばれましたよ！")
                 
                 if let item = json["items"].array?.first,
                    let title = item["volumeInfo"]["title"].string,
                    let owner = FirebaseUtil.userName,
                    let uid = Auth.auth().currentUser?.uid {
                     
-                    print("呼ばれましたよ！！")
-                    
-                    let authors = item["volumeInfo"]["authors"].array as? [String]
-                    let author = authors?.joined(separator: ",")
+                    let authors = item["volumeInfo"]["authors"].array?.compactMap { $0.string }
+                    let author = authors?.joined(separator: "/")
                     let publication_date = item["volumeInfo"]["publishedDate"].string
                     let lowResURL = item["volumeInfo"]["imageLinks"]["smallThumbnail"].string
                     let highResURL = item["volumeInfo"]["imageLinks"]["thumbnail"].string

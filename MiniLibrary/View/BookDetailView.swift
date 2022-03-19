@@ -15,6 +15,7 @@ import SnapKit
 class BookDetailView : UIView {
     
     let bookinfo: BookInfo
+    let isPresentOwner: Bool
     
     var hstack: UIStackView = {
         let stack = UIStackView()
@@ -69,7 +70,9 @@ class BookDetailView : UIView {
         let label = MiniLibraryLabel(size: 12)
         label.textColor = .gray
         label.textAlignment = .right
-        label.text = "所有者: " + bookinfo.owner
+        if self.isPresentOwner {
+            label.text = "所有者: " + bookinfo.owner
+        }
         return label
     }()
     
@@ -104,8 +107,9 @@ class BookDetailView : UIView {
     
     private let disposeBag = DisposeBag()
     
-    init(bookinfo: BookInfo) {
+    init(bookinfo: BookInfo, isPresentOwner: Bool = true) {
         self.bookinfo = bookinfo
+        self.isPresentOwner = isPresentOwner
         super.init(frame: .zero)
         setup()
     }

@@ -44,6 +44,8 @@ class MiniLibraryAlertController : UIViewController {
     var customViews: [UIView]?
     var actions: [MiniLibraryAlertAction]
     var width_multipledBy: CGFloat
+    var confirmAlert: MiniLibraryAlertController?
+    weak var target: UIViewController?
     
     var titleLabel: MiniLibraryLabel? {
         didSet {
@@ -155,6 +157,14 @@ class MiniLibraryAlertController : UIViewController {
         self.actions.append(action)
     }
     
+    func showConfirmAlert(target: UIViewController, title: String, action: MiniLibraryAlertAction) {
+        confirmAlert = MiniLibraryAlertController(title: title)
+        self.target = target
+        let cancel = MiniLibraryAlertAction(message: "キャンセル", option: .cancel, handler: nil)
+        confirmAlert?.addAction(cancel)
+        confirmAlert?.addAction(action)
+    }
+    
     private func setupViewController() {
         self.providesPresentationContextTransitionStyle = true
         self.definesPresentationContext = true
@@ -249,22 +259,20 @@ class MiniLibraryAlertController : UIViewController {
         leftButton?.rx.tap
             .asDriver()
             .drive {[weak self] _ in
-                if let handler = self?.actions[0].handler {
-                    handler()
-                }else{
-                    self?.dismiss(animated: true, completion: nil)
-                }
+                self?.actions[0].handler?()
+                self?.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
         
         rightButton?.rx.tap
             .asDriver()
             .drive {[weak self] _ in
-                if let handler = self?.actions[1].handler {
-                    handler()
-                }else{
-                    self?.dismiss(animated: true, completion: nil)
-                }
+                self?.actions[1].handler?()
+                self?.dismiss(animated: true, completion: {[weak self] in
+                    if let confirmAlert = self?.confirmAlert {
+                        self?.target?.present(confirmAlert, animated: true, completion: nil)
+                    }
+                })
             }
             .disposed(by: disposeBag)
         

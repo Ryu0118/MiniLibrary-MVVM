@@ -42,6 +42,11 @@
 		237E7C3127E1FD2600C1731C /* LibraryEntranceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C3027E1FD2600C1731C /* LibraryEntranceViewController.swift */; };
 		237E7C3327E2197400C1731C /* MiniLibraryAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */; };
 		237E7C3527E2330200C1731C /* LibraryEntranceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */; };
+		23B41F2027E596ED00F9BE2E /* RentPeriodSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F1F27E596ED00F9BE2E /* RentPeriodSelectionView.swift */; };
+		23B41F2227E5C41600F9BE2E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2127E5C41600F9BE2E /* NotificationViewController.swift */; };
+		23B41F2427E5C46800F9BE2E /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2327E5C46800F9BE2E /* NotificationViewModel.swift */; };
+		23B41F2627E5C64200F9BE2E /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2527E5C64200F9BE2E /* NotificationCell.swift */; };
+		23B41F2827E5C6B000F9BE2E /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2727E5C6B000F9BE2E /* Notification.swift */; };
 		23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317127E041BC001C7BC2 /* AppDelegate.swift */; };
 		23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317327E041BC001C7BC2 /* SceneDelegate.swift */; };
 		23D7317627E041BC001C7BC2 /* LibraryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317527E041BC001C7BC2 /* LibraryListViewController.swift */; };
@@ -117,6 +122,11 @@
 		237E7C3027E1FD2600C1731C /* LibraryEntranceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntranceViewController.swift; sourceTree = "<group>"; };
 		237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniLibraryAlertController.swift; sourceTree = "<group>"; };
 		237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEntranceViewModel.swift; sourceTree = "<group>"; };
+		23B41F1F27E596ED00F9BE2E /* RentPeriodSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentPeriodSelectionView.swift; sourceTree = "<group>"; };
+		23B41F2127E5C41600F9BE2E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		23B41F2327E5C46800F9BE2E /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
+		23B41F2527E5C64200F9BE2E /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		23B41F2727E5C6B000F9BE2E /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		23D7316E27E041BC001C7BC2 /* MiniLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D7317127E041BC001C7BC2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23D7317327E041BC001C7BC2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -186,6 +196,7 @@
 				232D20DE27E3322E00B45BAD /* RentingCell.swift */,
 				232D20D827E3101B00B45BAD /* MemberCell.swift */,
 				237E7C2627E1BC1100C1731C /* LibraryListCell.swift */,
+				23B41F2527E5C64200F9BE2E /* NotificationCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -258,6 +269,7 @@
 				232D20ED27E378AF00B45BAD /* PairView.swift */,
 				232D20F527E4A81000B45BAD /* LibraryHeaderView.swift */,
 				232D20F727E4CEEC00B45BAD /* BookDetailView.swift */,
+				23B41F1F27E596ED00F9BE2E /* RentPeriodSelectionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -271,6 +283,7 @@
 				237E7C3427E2330200C1731C /* LibraryEntranceViewModel.swift */,
 				232D20DA27E3147200B45BAD /* UserListViewModel.swift */,
 				232D20DC27E3295000B45BAD /* LibraryViewModel.swift */,
+				23B41F2327E5C46800F9BE2E /* NotificationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -286,6 +299,7 @@
 				232D20EF27E41D4C00B45BAD /* RakutenBooksAPI.swift */,
 				232D20F327E497C600B45BAD /* UserList.swift */,
 				232D20F927E4E26D00B45BAD /* GoogleBooksAPI.swift */,
+				23B41F2727E5C6B000F9BE2E /* Notification.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -315,6 +329,7 @@
 				237E7C3227E2197400C1731C /* MiniLibraryAlertController.swift */,
 				232D20D127E2E44C00B45BAD /* LibraryViewController.swift */,
 				232D20D627E30B6C00B45BAD /* UserListViewController.swift */,
+				23B41F2127E5C41600F9BE2E /* NotificationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -618,14 +633,18 @@
 				237E7C3527E2330200C1731C /* LibraryEntranceViewModel.swift in Sources */,
 				23D731AA27E0547F001C7BC2 /* UIFont+.swift in Sources */,
 				232D20E627E36B3300B45BAD /* UIImage+.swift in Sources */,
+				23B41F2627E5C64200F9BE2E /* NotificationCell.swift in Sources */,
 				23D731BE27E07E10001C7BC2 /* LoginViewModel.swift in Sources */,
 				232D20F027E41D4D00B45BAD /* RakutenBooksAPI.swift in Sources */,
 				232D20F227E423FB00B45BAD /* Array.swift in Sources */,
+				23B41F2827E5C6B000F9BE2E /* Notification.swift in Sources */,
 				23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */,
 				237E7C1B27E0C0AB00C1731C /* Registration.swift in Sources */,
+				23B41F2427E5C46800F9BE2E /* NotificationViewModel.swift in Sources */,
 				232D20F827E4CEED00B45BAD /* BookDetailView.swift in Sources */,
 				232D20DF27E3322E00B45BAD /* RentingCell.swift in Sources */,
 				232D20DD27E3295000B45BAD /* LibraryViewModel.swift in Sources */,
+				23B41F2227E5C41600F9BE2E /* NotificationViewController.swift in Sources */,
 				23D731B327E05730001C7BC2 /* AuthTextField.swift in Sources */,
 				237E7C2127E0D8ED00C1731C /* UIAlertController+.swift in Sources */,
 				23D731BA27E06B42001C7BC2 /* Reactive+.swift in Sources */,
@@ -639,6 +658,7 @@
 				237E7C2D27E1CA7900C1731C /* LibraryListViewModel.swift in Sources */,
 				232D20F627E4A81100B45BAD /* LibraryHeaderView.swift in Sources */,
 				232D20E127E3324B00B45BAD /* AllBooksCell.swift in Sources */,
+				23B41F2027E596ED00F9BE2E /* RentPeriodSelectionView.swift in Sources */,
 				23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */,
 				237E7C2527E1B60200C1731C /* FirebaseUtil.swift in Sources */,
 				232D20F427E497C700B45BAD /* UserList.swift in Sources */,
