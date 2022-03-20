@@ -59,43 +59,35 @@ class RentingCell : UICollectionViewCell {
             }
             
             titleLabel.text = bookinfo.title
-            titleLabel.numberOfLines = 2
-
-            deadlineLabel.secondText = bookinfo.deadline?.string()
-            ownerLabel.secondText = bookinfo.owner
-            currentOwnerLabel.secondText = bookinfo.currentOwner
+            titleLabel.numberOfLines = 0
+            titleLabel.sizeToFit()
+            titleLabel.adjustsFontSizeToFitWidth = true
             
-            deadlineLabel.firstText = "期限:"
-            ownerLabel.firstText = "貸している人:"
-            currentOwnerLabel.firstText = "借りている人:"
-            
-            deadlineLabel.firstView.cast(MiniLibraryLabel.self)?.textColor = .appTextColor
-            ownerLabel.firstView.cast(MiniLibraryLabel.self)?.textColor = .appTextColor
-            currentOwnerLabel.firstView.cast(MiniLibraryLabel.self)?.textColor = .appTextColor
-            deadlineLabel.secondView.cast(MiniLibraryLabel.self)?.textColor = .grayTextColor
-            ownerLabel.secondView.cast(MiniLibraryLabel.self)?.textColor = .grayTextColor
-            currentOwnerLabel.secondView.cast(MiniLibraryLabel.self)?.textColor = .grayTextColor
+            deadlineLabel.attributedText = textAttributes(left: "期限:  ", right: bookinfo.deadline?.string() ?? "")
+            currentOwnerLabel.attributedText = textAttributes(left: "借りている人:  ", right: bookinfo.currentOwner ?? "")
+            ownerLabel.attributedText = textAttributes(left: "貸している人:  ", right: bookinfo.owner)
             
         }
     }
     
     var thumbnail: UIImageView!
     var titleLabel: MiniLibraryLabel!
-    var deadlineLabel: PairView!
-    var ownerLabel: PairView!
-    var currentOwnerLabel: PairView!
+    var deadlineLabel: MiniLibraryLabel!
+    var ownerLabel: MiniLibraryLabel!
+    var currentOwnerLabel: MiniLibraryLabel!
     
     var hstack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.distribution = .equalSpacing
+        stack.distribution = .fillProportionally
+        stack.spacing = 12
         return stack
     }()
     
     var vstack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.distribution = .fillProportionally
+        stack.distribution = .equalSpacing
         return stack
     }()
     
@@ -110,21 +102,22 @@ class RentingCell : UICollectionViewCell {
     }
     
     func update(bookinfo: BookInfo) {
+        deadlineLabel = MiniLibraryLabel(size: 12)
+        currentOwnerLabel = MiniLibraryLabel(size: 12)
+        ownerLabel = MiniLibraryLabel(size: 12)
+        [deadlineLabel, currentOwnerLabel, ownerLabel].forEach { $0.textAlignment = .left }
         thumbnail = UIImageView()
         titleLabel = MiniLibraryLabel(size: 16)
-        deadlineLabel = PairView(first: MiniLibraryLabel(size: 12), second: MiniLibraryLabel(size: 12))
-        ownerLabel = PairView(first: MiniLibraryLabel(size: 12), second: MiniLibraryLabel(size: 12))
-        currentOwnerLabel = PairView(first: MiniLibraryLabel(size: 12), second: MiniLibraryLabel(size: 12))
-        
+
         self.bookinfo = bookinfo
         
         hstack.removeAllArrangedSubviews()
         vstack.removeAllArrangedSubviews()
         hstack.addArrangedSubviews([thumbnail, vstack])
-        vstack.addArrangedSubviews([titleLabel, deadlineLabel, ownerLabel, currentOwnerLabel])
-        vstack.setCustomSpacing(15, after: titleLabel)
-        vstack.setCustomSpacing(5, after: deadlineLabel)
-        vstack.setCustomSpacing(5, after: ownerLabel)
+        vstack.addArrangedSubviews([titleLabel, deadlineLabel, currentOwnerLabel, ownerLabel])
+//        vstack.setCustomSpacing(6, after: titleLabel)
+//        vstack.setCustomSpacing(2, after: deadlineLabel)
+//        vstack.setCustomSpacing(2, after: ownerLabel)
         
         addSubview(hstack)
         
@@ -133,6 +126,48 @@ class RentingCell : UICollectionViewCell {
             $0.left.equalToSuperview().offset(8)
             $0.right.equalToSuperview().offset(-8)
         }
+        
+        vstack.snp.makeConstraints {
+            $0.height.equalToSuperview()
+        }
+        
+        thumbnail.snp.makeConstraints {
+            $0.height.equalTo(106 * 1.3)
+            $0.width.equalTo(70 * 1.3)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.height.equalToSuperview().multipliedBy(0.5)
+        }
+        
+        [deadlineLabel, currentOwnerLabel, ownerLabel].forEach { label in
+            label.snp.makeConstraints {
+                $0.height.lessThanOrEqualTo(18)
+                //$0.width.lessThanOrEqualToSuperview().multipliedBy(0.7)
+            }
+        }
+    }
+    
+    private func textAttributes(left: String, right: String) -> NSMutableAttributedString {
+        
+        let nameAttributes: [NSAttributedString.Key : Any] = [
+            .foregroundColor : UIColor.black,
+            .font : UIFont.appFont(size: 12)
+        ]
+        let messageAttributes: [NSAttributedString.Key : Any] = [
+            .foregroundColor : UIColor.darkGray,
+            .font : UIFont.appFont(size: 12)
+        ]
+        
+        let nameString = NSAttributedString(string: left, attributes: nameAttributes)
+        let messageString = NSAttributedString(string: right, attributes: messageAttributes)
+        
+        let mutableString = NSMutableAttributedString()
+        mutableString.append(nameString)
+        mutableString.append(messageString)
+        
+        return mutableString
+        
     }
     
 }

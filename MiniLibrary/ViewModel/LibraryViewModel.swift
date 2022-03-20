@@ -25,6 +25,8 @@ protocol LibraryViewModelOutputs: AnyObject {
     var bookinfo: PublishSubject<[BookInfo]> { get }
     var apiResult: PublishSubject<BookInfo> { get }
     var rentApplicationResult: PublishSubject<String> { get }
+    var returnBookResult: PublishRelay<String> { get }
+    var removeBookResult: PublishRelay<String> { get }
 }
 
 protocol LibraryViewModelType: AnyObject {
@@ -62,6 +64,8 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
     var bookinfo = PublishSubject<[BookInfo]>()
     var apiResult = PublishSubject<BookInfo>()
     var rentApplicationResult = PublishSubject<String>()
+    var returnBookResult = PublishRelay<String>()
+    var removeBookResult = PublishRelay<String>()
     
     private let disposeBag = DisposeBag()
     
@@ -101,7 +105,7 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
             .bind(to: apiResult)
             .disposed(by: disposeBag)
         
-            
+        
     }
     
     func sendRentApplication(bookinfo: BookInfo, libraryCode: String, senderUserList: UserList) {
@@ -123,6 +127,8 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
                     if book.isRented {
                         let libraryItem = LibraryItem.renting(bookinfo: book)
                         rentingItems.append(libraryItem)
+                        let allBooksItem = LibraryItem.allbooks(bookinfo: book)
+                        allBooksItems.append(allBooksItem)
                     }
                     else {
                         let libraryItem = LibraryItem.allbooks(bookinfo: book)
@@ -137,6 +143,22 @@ class LibraryViewModel: LibraryViewModelType, LibraryViewModelOutputs, LibraryVi
                 self?.items.accept(librarySection)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func returnBook(libraryCode: String, bookinfo: BookInfo) {
+        
+        FirebaseUtil.returnBook(libraryCode: libraryCode, bookinfo: bookinfo)
+            .bind(to: returnBookResult)
+            .disposed(by: disposeBag)
+        
+    }
+    
+    func removeBook(libraryCode: String, bookinfo: BookInfo) {
+        
+        FirebaseUtil.removeBook(libraryCode: libraryCode, bookinfo: bookinfo)
+            .bind(to: removeBookResult)
+            .disposed(by: disposeBag)
+        
     }
     
 }

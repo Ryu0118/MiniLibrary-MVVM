@@ -21,18 +21,21 @@ class LibraryHeaderView : UICollectionReusableView {
     
     func setup(indexPath: IndexPath) {
         subviews.forEach { $0.removeFromSuperview() }
-        let titleLabel = MiniLibraryLabel(size: 25)
+        let titleLabel = MiniLibraryLabel(size: 20)
         addSubview(titleLabel)
-        
-        titleLabel.snp.makeConstraints {
-            $0.left.centerY.equalToSuperview()
-        }
         
         switch indexPath.section {
         case 0:
             titleLabel.text = "貸出中の本"
+            titleLabel.snp.makeConstraints {
+                $0.left.centerY.equalToSuperview()
+            }
         case 1:
             titleLabel.text = "全ての本"
+            titleLabel.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.left.equalToSuperview().offset(8)
+            }
         default:
             break
         }

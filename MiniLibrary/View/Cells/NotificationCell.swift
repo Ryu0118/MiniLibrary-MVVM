@@ -194,7 +194,7 @@ class NotificationCell : UITableViewCell {
         mutableString.append(messageString)
         
         messageLabel.attributedText = mutableString
-        messageLabel.textAlignment = .right
+        messageLabel.textAlignment = .left
         messageLabel.numberOfLines = 0
         messageLabel.sizeToFit()
         messageLabel.adjustsFontSizeToFitWidth = true

@@ -47,6 +47,7 @@
 		23B41F2427E5C46800F9BE2E /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2327E5C46800F9BE2E /* NotificationViewModel.swift */; };
 		23B41F2627E5C64200F9BE2E /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2527E5C64200F9BE2E /* NotificationCell.swift */; };
 		23B41F2827E5C6B000F9BE2E /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2727E5C6B000F9BE2E /* Notification.swift */; };
+		23B41F2A27E7669000F9BE2E /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B41F2927E7669000F9BE2E /* SearchViewController.swift */; };
 		23D7317227E041BC001C7BC2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317127E041BC001C7BC2 /* AppDelegate.swift */; };
 		23D7317427E041BC001C7BC2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317327E041BC001C7BC2 /* SceneDelegate.swift */; };
 		23D7317627E041BC001C7BC2 /* LibraryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D7317527E041BC001C7BC2 /* LibraryListViewController.swift */; };
@@ -127,6 +128,7 @@
 		23B41F2327E5C46800F9BE2E /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		23B41F2527E5C64200F9BE2E /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		23B41F2727E5C6B000F9BE2E /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		23B41F2927E7669000F9BE2E /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		23D7316E27E041BC001C7BC2 /* MiniLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D7317127E041BC001C7BC2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23D7317327E041BC001C7BC2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -330,6 +332,7 @@
 				232D20D127E2E44C00B45BAD /* LibraryViewController.swift */,
 				232D20D627E30B6C00B45BAD /* UserListViewController.swift */,
 				23B41F2127E5C41600F9BE2E /* NotificationViewController.swift */,
+				23B41F2927E7669000F9BE2E /* SearchViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -656,6 +659,7 @@
 				237E7C1927E0B35A00C1731C /* RegistrationViewModel.swift in Sources */,
 				237E7C2B27E1C14600C1731C /* UserListView.swift in Sources */,
 				237E7C2D27E1CA7900C1731C /* LibraryListViewModel.swift in Sources */,
+				23B41F2A27E7669000F9BE2E /* SearchViewController.swift in Sources */,
 				232D20F627E4A81100B45BAD /* LibraryHeaderView.swift in Sources */,
 				232D20E127E3324B00B45BAD /* AllBooksCell.swift in Sources */,
 				23B41F2027E596ED00F9BE2E /* RentPeriodSelectionView.swift in Sources */,

@@ -80,6 +80,8 @@ class LibraryViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //show Progress HUD
+        KRProgressHUD.show()
         setupNavigationbar()
         setupCollectionView()
         bind()
@@ -102,7 +104,7 @@ extension LibraryViewController {
         func scrollingBehavior() -> UICollectionLayoutSectionOrthogonalScrollingBehavior {
             switch self {
             case .renting:
-                return .continuous
+                return .groupPaging
             default:
                 return .none
             }
@@ -113,11 +115,11 @@ extension LibraryViewController {
     //MARK: UICollectionViewLayout
     private func createLayout() -> UICollectionViewLayout {
         
-        var isExistRentedBooks = !self.bookinfo.filter({ $0.isRented }).isEmpty
+        let isExistRentedBooks = !self.bookinfo.filter({ $0.isRented }).isEmpty
         
         let sectionProvider = { (sectionIndex: Int,
                                  layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
-            print("テストだよ", sectionIndex)
+            
             guard let sectionKind = SectionLayoutKind(rawValue: self.sectionCount == 2 ? sectionIndex : 1) else { fatalError() }
             
             switch sectionKind {
@@ -130,7 +132,7 @@ extension LibraryViewController {
                 let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(groupWidth),
                                                        heightDimension: .absolute(150))
                 let group: NSCollectionLayoutGroup
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
                 group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
                 
                 let section = NSCollectionLayoutSection(group: group)
@@ -138,12 +140,8 @@ extension LibraryViewController {
                 section.interGroupSpacing = 10
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15)
                 
-                var sectionHeaderHeight = CGFloat(44)
-                
-                if self.bookinfo.filter({ $0.isRented }).isEmpty && sectionIndex == 0 {
-                    sectionHeaderHeight = CGFloat(0)
-                }
-                
+                let sectionHeaderHeight = CGFloat(44)
+   
                 let sectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                heightDimension: .estimated(sectionHeaderHeight))
                 let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sectionHeaderSize, elementKind: "header", alignment: .top)
@@ -181,7 +179,7 @@ extension LibraryViewController {
         }
         
         let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.interSectionSpacing = isExistRentedBooks ? 30 : 0
+        config.interSectionSpacing = isExistRentedBooks ? 18 : -10
         
         let layout = UICollectionViewCompositionalLayout(sectionProvider: sectionProvider, configuration: config)
         return layout
@@ -194,21 +192,7 @@ extension LibraryViewController {
         collectionView.backgroundColor = .appBackgroundColor
         collectionView.register(AllBooksCell.self, forCellWithReuseIdentifier: AllBooksCell.identifier)
         collectionView.register(RentingCell.self, forCellWithReuseIdentifier: RentingCell.identifier)
-        
-        collectionView.rx.setDelegate(self).disposed(by: disposeBag)
-        
-        view.addSubview(collectionView)
-        collectionView.snp.makeConstraints {
-            $0.top.left.right.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview()
-        }
-        
-        //bind collectionView dataSource
-        viewModel.outputs.items
-            .bind(to: collectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-        
-        viewModel.updateItems(libraryCode: library.library_code)
+        collectionView.contentInset.top = 10
     }
     
     //MARK: setupNavigationBar
@@ -263,6 +247,7 @@ extension LibraryViewController {
     
     //MARK: bind
     private func bind() {
+        
         bellBarButtonItem.rx.tap
             .asDriver()
             .drive {[weak self] _ in
@@ -301,7 +286,7 @@ extension LibraryViewController {
             })
             .disposed(by: disposeBag)
         
-        collectionView.rx.itemSelected
+        collectionView?.rx.itemSelected
             .map { [weak self] indexpath -> LibraryItem? in
                 return self?.dataSource[indexpath]
             }
@@ -310,7 +295,21 @@ extension LibraryViewController {
                 
                 switch item {
                 case .renting(let bookinfo):
-                    break
+                    let alert = self.presentBookDetailView(bookinfo: bookinfo, isPresentOwner: true)
+                    let cancelAction = MiniLibraryAlertAction(message: "キャンセル", option: .cancel, handler: nil)
+                    alert.addAction(cancelAction)
+                    
+                    if bookinfo.currentOwner_uid == Auth.auth().currentUser?.uid {
+                        let returnAction = MiniLibraryAlertAction(message: "返却", option: .normal, handler: {
+                            alert.showConfirmAlert(target: self, title: "本当に返却しますか？", action: .init(message: "返却", option: .normal, handler: {
+                                self.viewModel.returnBook(libraryCode: self.library.library_code, bookinfo: bookinfo)
+                            }))
+                        })
+                        alert.addAction(returnAction)
+                    }
+                    
+                    self.present(alert, animated: true, completion: nil)
+                    
                 case .allbooks(let bookinfo):
                     
                     var bookinfo = bookinfo
@@ -326,12 +325,13 @@ extension LibraryViewController {
                             $0.width.equalTo(rentPeriodSelection)
                         }
                     }
-                    if isOwnedBook { pairView = nil }
+                    if isOwnedBook || bookinfo.isRented { pairView = nil }
                     
                     let alert = self.presentBookDetailView(bookinfo: bookinfo, customView: pairView)
                     let cancel = MiniLibraryAlertAction(message: "キャンセル", option: .cancel, handler: nil)
-                
-                    if !isOwnedBook {
+                    alert.addAction(cancel)
+                    
+                    if !isOwnedBook && !bookinfo.isRented {
                         let submit = MiniLibraryAlertAction(message: "貸出申請", option: .normal, handler: {
                             alert.showConfirmAlert(target: self, title: "本当に申請を送りますか？", action: MiniLibraryAlertAction(message: "はい", option: .normal , handler: {
                                 
@@ -346,15 +346,17 @@ extension LibraryViewController {
                                 
                             }))
                         })
-                        alert.addActions([cancel, submit])
+                        alert.addAction(submit)
                     }
                     else {
-                        let remove = MiniLibraryAlertAction(message: "削除", option: .normal, handler: {
-                            alert.showConfirmAlert(target: self, title: "本当に削除しますか？", action: MiniLibraryAlertAction(message: "はい", option: .normal , handler: {
-                                
-                            }))
-                        })
-                        alert.addActions([cancel, remove])
+                        if !bookinfo.isRented {
+                            let remove = MiniLibraryAlertAction(message: "削除", option: .normal, handler: {
+                                alert.showConfirmAlert(target: self, title: "本当に削除しますか？", action: MiniLibraryAlertAction(message: "はい", option: .normal , handler: {
+                                    self.viewModel.removeBook(libraryCode: self.library.library_code, bookinfo: bookinfo)
+                                }))
+                            })
+                            alert.addAction(remove)
+                        }
                     }
                     
                     self.present(alert, animated: true)
@@ -386,10 +388,60 @@ extension LibraryViewController {
         viewModel.outputs.rentApplicationResult
             .asObservable()
             .subscribe(onNext: {[weak self] result in
-                guard let self = self, !result.isEmpty else { return }
-                MiniLibraryAlertController.showErrorAlert(target: self, title: result)
+                guard let self = self else { return }
+                if !result.isEmpty {
+                    MiniLibraryAlertController.showErrorAlert(target: self, title: result)
+                }            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.items
+            .observe(on: MainScheduler.instance)
+            .do { _ in KRProgressHUD.dismiss() }
+            .bind(to: collectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.bookinfo
+            .take(1)
+            .subscribe {[unowned self] _ in
+                collectionView.collectionViewLayout = createLayout()
+                view.addSubview(collectionView)
+                collectionView.snp.makeConstraints {
+                    $0.top.left.right.equalTo(view.safeAreaLayoutGuide)
+                    $0.bottom.equalToSuperview()
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.bookinfo
+            .skip(1)
+            .subscribe { [unowned self] _ in
+                collectionView.collectionViewLayout = createLayout()
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.returnBookResult
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { strongSelf, response in
+                if !response.isEmpty {
+                    MiniLibraryAlertController.showErrorAlert(target: strongSelf, title: response)
+                }
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.removeBookResult
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { strongSelf, response in
+                if !response.isEmpty {
+                    MiniLibraryAlertController.showErrorAlert(target: self, title: response)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.updateItems(libraryCode: library.library_code)
     }
     
     @discardableResult
@@ -450,11 +502,6 @@ extension LibraryViewController : BarcodeScannerCodeDelegate, BarcodeScannerDism
         let alert = MiniLibraryAlertController(title: "エラーが発生しました", actions: [MiniLibraryAlertAction(message: "OK", option: .normal, handler: nil)])
         present(alert, animated: true, completion: nil)
     }
-    
-}
-
-//MARK: UICollectionViewDelegate
-extension LibraryViewController : UICollectionViewDelegate {
     
 }
 

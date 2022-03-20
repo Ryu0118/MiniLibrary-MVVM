@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import Firebase
 
 struct BookInfo {
     var rent_info: [String:Any]
@@ -17,7 +17,7 @@ struct BookInfo {
         return rent_info["rent_period"] as? Int
     }
     var deadline: Date? {
-        return rent_info["deadline"] as? Date
+        return (rent_info["deadline"] as? Timestamp)?.dateValue()
     }
     var identifier: String {
         return rent_info["identifier"] as! String

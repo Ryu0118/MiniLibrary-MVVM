@@ -250,6 +250,134 @@ class FirebaseUtil: RequireLogin {
         }
     }
     
+    static func removeBook(libraryCode: String, bookinfo: BookInfo) -> Observable<String> {
+        
+        let books = getDocument("books", documentID: libraryCode)
+        let library = findDocuments("library", key: "library_code", isEqualTo: libraryCode)
+        let notifications = getDocument("notifications", documentID: libraryCode)
+        
+        return Observable.combineLatest(books, library, notifications)
+            .flatMap { books, library, notifications -> Observable<String> in
+                
+                guard let booksData = books?.data(),
+                      let uid = Auth.auth().currentUser?.uid,
+                      var rent_info = booksData["rent_info"] as? [[String : Any]],
+                      let rent_info_index = rent_info.firstIndex(where: {($0["identifier"] as? String) == bookinfo.book_identifier }),
+                      var books = booksData["books"] as? [String],
+                      var books_data = booksData["books_data"] as? [[String : String]],
+                      let books_data_index = books_data.firstIndex(where: { element in
+                          element["identifier"] == bookinfo.book_identifier
+                      })
+                else {
+                    
+                    return Observable<String>.just("booksのドキュメントが見つかりませんでした")
+                }
+                
+                guard let document = library.documents.first else {
+                    return Observable<String>.just("Libraryが見つかりませんでした")
+                }
+                
+                rent_info.remove(at: rent_info_index)
+                books.removeAll(where: { book in
+                    book == bookinfo.book_identifier
+                })
+                books_data.remove(at: books_data_index)
+                
+                let booksUpdateObserver = updateDocument("books", documentID: libraryCode, updateData: [
+                    "rent_info" : rent_info,
+                    "books" : books,
+                    "books_data" : books_data
+                ])
+                
+                //library collection
+                
+                let libraryDocumentID = document.documentID
+                let libraryData = document.data()
+                var library_book_count = libraryData["book_count"] as! Int
+                var usersBooks = libraryData["users_books"] as? [String : [String]]
+                var mybook = usersBooks?[uid]
+                
+                mybook?.removeAll(where: { book in
+                    book == bookinfo.book_identifier
+                })
+                usersBooks?.updateValue(mybook ?? [], forKey: uid)
+                library_book_count -= 1
+                
+                let libraryUpdateObserver = updateDocument("library", documentID: libraryDocumentID, updateData: [
+                    "book_count" : library_book_count,
+                    "users_books" : usersBooks as Any
+                ])
+                
+                if let notificationsData = notifications?.data(),
+                   var applyNotifications = notificationsData["applyNotifications"] as? [String : [[String : Any]]],
+                   var myNotifications = applyNotifications[uid],
+                   let index = myNotifications.firstIndex(where: { element in
+                       (element["books_data"] as? [String : String])?["identifier"] == bookinfo.book_identifier
+                   }) {
+                    
+                    myNotifications.remove(at: index)
+                    applyNotifications.updateValue(myNotifications, forKey: uid)
+                    
+                    let notificationsObserver = updateDocument("notifications", documentID: libraryCode, updateData: [
+                        "applyNotifications" : applyNotifications
+                    ])
+                    
+                    return Observable.combineLatest(booksUpdateObserver, libraryUpdateObserver, notificationsObserver)
+                        .flatMap { res0, res1, res2 -> Observable<String> in
+                            if res0 == res1 && res1 == res2 {
+                                return Observable<String>.just(res0)
+                            }
+                            else {
+                                return Observable<String>.just("内部のエラーが発生しました")
+                            }
+                        }
+                    
+                }
+                
+                return Observable.combineLatest(booksUpdateObserver, libraryUpdateObserver)
+                    .flatMap { res0, res1 -> Observable<String> in
+                        if res0 == res1 {
+                            return Observable<String>.just(res0)
+                        }
+                        else {
+                            return Observable<String>.just(res0.isEmpty ? res1 : res0)
+                        }
+                    }
+                
+                
+                
+            }
+    }
+    
+    static func returnBook(libraryCode: String, bookinfo: BookInfo) -> Observable<String> {
+        return getDocument("books", documentID: libraryCode)
+            .flatMap { books -> Observable<String> in
+                
+                guard let booksData = books?.data(),
+                var rent_info = booksData["rent_info"] as? [[String : Any]],
+                let rent_info_index = rent_info.firstIndex(where: {($0["identifier"] as? String) == bookinfo.book_identifier }),
+                var targetRent_info = rent_info.filter({ ($0["identifier"] as? String) == bookinfo.book_identifier }).first else {
+                    return Observable<String>.just("ドキュメントが見つかりませんでした")
+                }
+                
+                targetRent_info.removeValue(forKey: "current_owner_uid")
+                targetRent_info.removeValue(forKey: "current_owner")
+                targetRent_info.removeValue(forKey: "current_owner_colorCode")
+                targetRent_info.removeValue(forKey: "rent_period")
+                targetRent_info.removeValue(forKey: "deadline")
+                targetRent_info.removeValue(forKey: "rent_date")
+                targetRent_info.updateValue(false, forKey: "is_rented")
+                
+                rent_info[rent_info_index] = targetRent_info
+                
+                return updateDocument("books", documentID: libraryCode, updateData: [
+                    "rent_info" : rent_info
+                ])
+                
+            }
+        
+    }
+    
     static func permitRentBook(libraryCode: String, notification: Notification) -> Observable<String> {
         //TODO: remove notification based on date and identifier
         //TODO: update rent_info
