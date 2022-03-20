@@ -44,6 +44,8 @@ final class RakutenBooksAPI {
                     let rent_info: [String:Any] = [
                         "owner_uid" : uid,
                         "current_owner" : nil,
+                        "current_owner_uid" : nil,
+                        "current_owner_colorCode" : nil,
                         "rent_period" : nil,
                         "deadline" : nil,
                         "identifier" : bookIdentifier,

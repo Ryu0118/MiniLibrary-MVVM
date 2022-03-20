@@ -11,10 +11,12 @@ import FirebaseAuth
 
 protocol NotificationViewModelInputs: AnyObject {
     func updateItems(libraryCode: String)
+    func permitRentalApplication(libraryCode: String, notification: Notification)
 }
 
 protocol NotificationViewModelOutputs: AnyObject {
     var notifications: BehaviorSubject<[Notification]> { get }
+    var permitRentBookResponse: PublishSubject<String> { get }
 }
 
 protocol NotificationViewModelType: AnyObject {
@@ -31,12 +33,20 @@ class NotificationViewModel: NotificationViewModelType, NotificationViewModelInp
     
     //outputs
     var notifications = BehaviorSubject<[Notification]>(value: [])
-    
+    var permitRentBookResponse = PublishSubject<String>()
     //inputs
     func updateItems(libraryCode: String) {
         
         FirebaseUtil.notificationListListener(libraryCode: libraryCode)
             .bind(to: notifications)
+            .disposed(by: disposeBag)
+        
+    }
+    
+    func permitRentalApplication(libraryCode: String, notification: Notification) {
+        
+        FirebaseUtil.permitRentBook(libraryCode: libraryCode, notification: notification)
+            .bind(to: permitRentBookResponse)
             .disposed(by: disposeBag)
         
     }

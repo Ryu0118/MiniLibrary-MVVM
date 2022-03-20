@@ -72,10 +72,21 @@ extension NotificationViewController {
                 let alert = strongSelf.rentalApplicationAlert(bookinfo: bookinfo)
                 let cancel = MiniLibraryAlertAction(message: "キャンセル", option: .normal, handler: nil)
                 let action = MiniLibraryAlertAction(message: "貸出申請を許可", option: .normal, handler: {
-                    
+                    strongSelf.viewModel.inputs.permitRentalApplication(libraryCode: strongSelf.libraryCode, notification: notification)
                 })
                 alert.addActions([cancel, action])
                 strongSelf.present(alert, animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.permitRentBookResponse
+            .asObservable()
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { strongSelf, response in
+                if !response.isEmpty {
+                    MiniLibraryAlertController.showErrorAlert(target: strongSelf, title: response)
+                }
             })
             .disposed(by: disposeBag)
         

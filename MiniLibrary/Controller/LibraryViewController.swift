@@ -350,7 +350,7 @@ extension LibraryViewController {
                     }
                     else {
                         let remove = MiniLibraryAlertAction(message: "削除", option: .normal, handler: {
-                            alert.showConfirmAlert(target: self, title: "本当に削除を送りますか？", action: MiniLibraryAlertAction(message: "はい", option: .normal , handler: {
+                            alert.showConfirmAlert(target: self, title: "本当に削除しますか？", action: MiniLibraryAlertAction(message: "はい", option: .normal , handler: {
                                 
                             }))
                         })

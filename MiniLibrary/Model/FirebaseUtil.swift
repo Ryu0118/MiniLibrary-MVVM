@@ -121,6 +121,7 @@ class FirebaseUtil: RequireLogin {
         
         return Observable.combineLatest(getDocument("books", documentID: libraryCode), findDocuments("library", key: "library_code", isEqualTo: libraryCode))
             .flatMap { documentSnapshot, querySnapshot -> Observable<String> in
+                
                 if let snapshot = documentSnapshot?.data(),
                    var gotRentInfo = snapshot["rent_info"] as? [[String:Any]],
                    var gotBooks = snapshot["books"] as? [String],
@@ -155,7 +156,16 @@ class FirebaseUtil: RequireLogin {
                         "books_data" : gotBooksData,
                     ]
                 
-                    return Observable.combineLatest(updateDocument("books", documentID: libraryCode, updateData: updateData), updateDocument("library", documentID: docID, updateData: ["book_count" : book_count, "users_books" : users_books]))
+                    return Observable.combineLatest(
+                        updateDocument("books",
+                                       documentID: libraryCode,
+                                       updateData: updateData
+                                      ),
+                        updateDocument("library",
+                                       documentID: docID,
+                                       updateData: ["book_count" : book_count, "users_books" : users_books]
+                                      )
+                    )
                         .flatMap { books, library -> Observable<String> in
                             if books == library {
                                 return Observable<String>.just("")
@@ -238,6 +248,62 @@ class FirebaseUtil: RequireLogin {
                 return Disposables.create()
             }
         }
+    }
+    
+    static func permitRentBook(libraryCode: String, notification: Notification) -> Observable<String> {
+        //TODO: remove notification based on date and identifier
+        //TODO: update rent_info
+        let notificationsObserver = getDocument("notifications", documentID: libraryCode)
+        let booksObserver = getDocument("books", documentID: libraryCode)
+        
+        return Observable.combineLatest(notificationsObserver, booksObserver)
+            .flatMap { notifications, books -> Observable<String> in
+                
+                guard let notificationsData = notifications?.data(),
+                      let uid = Auth.auth().currentUser?.uid,
+                      var applyNotifications = notificationsData["applyNotifications"]
+                        as? [String : [[String : Any]]],
+                      var myNotifications = applyNotifications[uid],
+                      let notificationIndex = myNotifications.firstIndex(where: {
+                          ($0["date"] as? Timestamp)?.dateValue() == notification.date && ($0["from_uid"] as? String) == notification.from_uid }),
+                      let booksData = books?.data(),
+                      var rent_info = booksData["rent_info"] as? [[String : Any]],
+                      let rent_info_index = rent_info.firstIndex(where: {($0["identifier"] as? String) == notification.identifier }),
+                      var targetRent_info = rent_info.filter({ ($0["identifier"] as? String) == notification.identifier }).first else {
+                          return Observable<String>.just("ドキュメントが見つかりませんでした")
+                      }
+                
+                let deadline = Timestamp(date: Date().addDate(notification.rent_period))
+                
+                myNotifications.remove(at: notificationIndex)
+                applyNotifications.updateValue(myNotifications, forKey: uid)
+                
+                targetRent_info.updateValue(notification.from_uid, forKey: "current_owner_uid")
+                targetRent_info.updateValue(notification.from_name, forKey: "current_owner")
+                targetRent_info.updateValue(notification.from_colorCode, forKey: "current_owner_colorCode")
+                targetRent_info.updateValue(notification.rent_period, forKey: "rent_period")
+                targetRent_info.updateValue(deadline, forKey: "deadline")
+                targetRent_info.updateValue(true, forKey: "is_rented")
+                targetRent_info.updateValue(Timestamp(date: Date()), forKey: "rent_date")
+                
+                rent_info[rent_info_index] = targetRent_info
+                
+                let updateNotification = updateDocument("notifications", documentID: libraryCode, updateData: ["applyNotifications" : applyNotifications])
+                let updatebook = updateDocument("books", documentID: libraryCode, updateData: [
+                    "rent_info" : rent_info
+                ])
+                
+                return Observable.combineLatest(updateNotification, updatebook)
+                    .flatMap { res0, res1 -> Observable<String> in
+                        if res0 == res1 {
+                            return Observable<String>.just(res0)
+                        }
+                        else {
+                            return Observable<String>.just(res1)
+                        }
+                    }
+                
+            }
     }
     
     static func applyRentBook(bookinfo: BookInfo, libraryCode: String, userList: UserList) -> Observable<String> {

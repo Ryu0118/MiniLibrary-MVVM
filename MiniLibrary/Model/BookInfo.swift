@@ -31,6 +31,12 @@ struct BookInfo {
     var currentOwner: String? {
         return rent_info["current_owner"] as? String
     }
+    var currentOwner_uid: String? {
+        return rent_info["current_owner_uid"] as? String
+    }
+    var currentOwner_colorCode: String? {
+        return rent_info["current_owner_colorCode"] as? String
+    }
     
     //metadata
     var imageURL: String? {
