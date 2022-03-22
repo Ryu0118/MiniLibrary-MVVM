@@ -164,9 +164,9 @@ extension LibraryViewController {
                 let section = NSCollectionLayoutSection(group: groups)
                 section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 0, trailing: 8)
                 
+                section.interGroupSpacing = itemSpacing
+                
                 if isExistRentedBooks {
-                    
-                    section.interGroupSpacing = itemSpacing
                     
                     let sectionHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                    heightDimension: .estimated(40))
@@ -239,8 +239,10 @@ extension LibraryViewController {
             self.scanner.headerViewController.titleLabel.text = "バーコードを読み取る"
             self.navigationController?.pushViewController(self.scanner, animated: true)
         }))
-        actions.append(UIAction(title: "検索する", image: UIImage(systemName: "magnifyingglass"), state: .off , handler: { _ in
-            
+        actions.append(UIAction(title: "検索する", image: UIImage(systemName: "magnifyingglass"), state: .off , handler: {[weak self] _ in
+            guard let self = self else { return }
+            let searchVC = SearchViewController(libraryCode: self.library.library_code)
+            self.navigationController?.pushViewController(searchVC, animated: true)
         }))
         return UIMenu(title: "", options: .displayInline, children: actions)
     }

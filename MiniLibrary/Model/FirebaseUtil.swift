@@ -430,7 +430,6 @@ class FirebaseUtil: RequireLogin {
                             return Observable<String>.just(res1)
                         }
                     }
-                
             }
     }
     
